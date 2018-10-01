@@ -2,8 +2,10 @@
     "autoDocstring.docstringFormat": "google",
     "cSpell.words": [
         "koistinen",
+        "ndarray",
         "numpy",
         "pypros",
+        "refl",
         "reflectivity",
         "saltikoff",
         "tempd"

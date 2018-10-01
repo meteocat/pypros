@@ -12,7 +12,7 @@ Welcome to pyPROS's documentation!
 
 This is inline ``if __name__ == '__main__':``
 
-.. automodule:: pypros.ros
+.. automodule:: pypros.pros
     :members:
 
 .. automodule:: pypros.dewpoint

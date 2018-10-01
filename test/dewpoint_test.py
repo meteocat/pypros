@@ -76,7 +76,6 @@ class TestDewpoint(unittest.TestCase):
         tempd[2][0] = -10
 
         result = ttd2tw(temp, tempd)
-        print(result)
         self.assertTrue(abs(result[0][0] - 20.01019) < 0.1)
         self.assertTrue(abs(result[1][0] - 14.13) < 0.1)
         self.assertTrue(abs(result[2][0] - 7.79) < 0.5)  # Divergence at low rh
