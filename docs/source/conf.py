@@ -14,13 +14,15 @@
 #
 import os
 import sys
+import datetime
+
 sys.path.insert(0, os.path.abspath('../../'))
 
 
 # -- Project information -----------------------------------------------------
-
+now = datetime.datetime.now()
 project = 'pyPROS'
-copyright = '2018, Servei Meteorològic de Catalunya'
+copyright = str(now.year)+', Servei Meteorològic de Catalunya'
 author = 'Servei Meteorològic de Catalunya'
 
 # The short X.Y version
@@ -44,6 +46,7 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
+    'sphinx.ext.napoleon'
 ]
 
 # Add any paths that contain templates here, relative to this directory.

@@ -15,6 +15,9 @@ This is inline ``if __name__ == '__main__':``
 .. automodule:: pypros.ros
     :members:
 
+.. automodule:: pypros.dewpoint
+    :members:
+
 Indices and tables
 ==================
 

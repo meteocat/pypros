@@ -1,0 +1,22 @@
+{
+    "autoDocstring.docstringFormat": "google",
+    "cSpell.words": [
+        "koistinen",
+        "numpy",
+        "pypros",
+        "reflectivity",
+        "saltikoff",
+        "tempd"
+    ],
+    "python.pythonPath": "${workspaceFolder}/venv/bin/python",
+    "python.unitTest.unittestArgs": [
+        "-v",
+        "-s",
+        "./test",
+        "-p",
+        "*_test.py"
+    ],
+    "python.unitTest.pyTestEnabled": false,
+    "python.unitTest.nosetestsEnabled": false,
+    "python.unitTest.unittestEnabled": true
+}
