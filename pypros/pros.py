@@ -2,6 +2,7 @@
 For a point or numpy arrays
 '''
 from pypros.dewpoint import td2hr
+from pypros.dewpoint import ttd2tw
 import numpy
 
 
@@ -66,7 +67,7 @@ def calculate_pros(temp, tempd, refl, method='ks'):
         refl (float, numpy array): The reflectivity, in dBZ
         method (str, optional): Defaults to 'ks'.
                                 ks for the Koistinen-Saltikoff method,
-                                tw for the wet bulb method
+                                tw for the wet bulb < 1.8 C method
 
     Raises:
         IndexError: Raised if the types don't match in size ot type
@@ -82,17 +83,19 @@ def calculate_pros(temp, tempd, refl, method='ks'):
                                         tempd.shape != refl.shape):
         raise IndexError("The matrices must have the same dimensions")
 
+    refl_bins = numpy.array([1, 5, 10, 15, 25])
+    refl_class = numpy.digitize(refl, refl_bins)
+
     if method == 'ks':
         prob_bins = numpy.array([0.0, 0.3, 0.7])
-        refl_bins = numpy.array([1, 5, 10, 15, 25])
-
         prob = calculate_koistinen_saltikoff(temp, tempd)
-
         ks_class = numpy.digitize(prob, prob_bins) - 1
-        refl_class = numpy.digitize(refl, refl_bins)
-
         pros = (refl_class + ks_class * 5) * (refl >= 1)
+
+    elif method == 'tw':
+        t_w = ttd2tw(temp, tempd)
+        rain = 1 - numpy.digitize(t_w, numpy.array([1.8]))
+        pros = (refl_class + rain * 10) * (refl >= 1)
     else:
         raise ValueError("Non valid method. Valid values are ks and tw")
-
     return pros

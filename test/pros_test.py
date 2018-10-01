@@ -61,6 +61,12 @@ class TestCalculateRos(unittest.TestCase):
         result = calculate_pros(2, 0, 12)
         self.assertEqual(result, 8)
 
+        # Check wet bulb method
+        result = calculate_pros(2, 0, 12, method='tw')
+        self.assertEqual(result, 13)
+        result = calculate_pros(6, 0, 12, method='tw')
+        self.assertEqual(result, 3)
+
         with self.assertRaises(IndexError) as cm:
             calculate_pros(23, tempd, numpy.ones((3, 5)))
         self.assertEqual(
