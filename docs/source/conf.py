@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath('../../'))
 
 # -- Project information -----------------------------------------------------
 now = datetime.datetime.now()
-project = 'pyPROS'
+project = 'pyRASP'
 copyright = str(now.year)+', Servei Meteorològic de Catalunya'
 author = 'Servei Meteorològic de Catalunya'
 

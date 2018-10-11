@@ -10,7 +10,7 @@
         "saltikoff",
         "tempd"
     ],
-    "python.pythonPath": "${workspaceFolder}/venv/bin/python",
+    "python.pythonPath": "/home/rvr/anaconda3/envs/pyrasp/bin/python",
     "python.unitTest.unittestArgs": [
         "-v",
         "-s",
