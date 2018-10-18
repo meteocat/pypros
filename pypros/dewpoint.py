@@ -83,7 +83,6 @@ def trhp2tw(temp, rh, p):
     Returns:
         float, numpy array: The wet bulb temperature in Celsius
     """
-
     rh_s = rh + 1
     tw = temp
 
