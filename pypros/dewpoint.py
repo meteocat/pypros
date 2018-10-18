@@ -3,7 +3,7 @@ Dew point calculations
 '''
 from numpy import power
 from numpy import arctan
-
+from math import exp
 
 def td2hr(temp, tempd):
     """
@@ -50,7 +50,7 @@ def hr2td(temp, r_h):
 
 
 def ttd2tw(temp, tempd):
-    """Gets the wet bulb temperature from the temperature and the dew point.
+    """Gets the wet bulb temperature from the temperature and the dew point
     Formula taken from:
     https://journals.ametsoc.org/doi/full/10.1175/JAMC-D-11-0143.1
 
@@ -69,3 +69,30 @@ def ttd2tw(temp, tempd):
             arctan(temp+rh) - arctan(rh-1.676331) +
             0.00391838*power(rh, 1.5) *
             arctan(0.023101*rh) - 4.686035)
+
+def trhp2tw(temp, rh, p):
+    """Gets the wet bulb temperature from the temperature, relative humidity
+    and pressure. Formula taken from:
+    https://www.weather.gov/epz/wxcalc_wetbulb (Brice and Hall, 2003)
+
+    Args:
+        temp (float) -- The temperature in Celsius
+        rh (float) -- The relative humidity in [0,1]
+        p (float) -- The pressure in hPa
+    
+    Returns:
+        float, numpy array: The wet bulb temperature in Celsius
+    """
+
+    rh_s = rh + 1
+    tw = temp
+
+    while rh_s >= rh:
+        tw = tw - 0.001
+        es = 6.112*exp(17.67*temp/(temp+243.5))
+        ew = 6.112*exp(17.67*tw/(tw+243.5))
+        e = ew - p*(temp-tw)*0.00066*(1+(0.00115*tw))
+
+        rh_s = e / es
+
+    return tw

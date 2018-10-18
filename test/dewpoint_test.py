@@ -2,6 +2,7 @@ import unittest
 from pypros.dewpoint import td2hr
 from pypros.dewpoint import hr2td
 from pypros.dewpoint import ttd2tw
+from pypros.dewpoint import trhp2tw
 import numpy
 
 
@@ -80,6 +81,23 @@ class TestDewpoint(unittest.TestCase):
         self.assertTrue(abs(result[1][0] - 14.13) < 0.1)
         self.assertTrue(abs(result[2][0] - 7.79) < 0.5)  # Divergence at low rh
 
+
+    def test_trhp2tw(self):
+        '''
+        Values checked at https://www.weather.gov/epz/wxcalc_rh
+        For an independent result
+        '''
+        result = trhp2tw(20,0.20,1013.25)
+        self.assertTrue(abs(result - 9.43) < 0.1)
+
+        result = trhp2tw(10, 0.65, 850)
+        self.assertTrue(abs(result - 6.72) < 0.1)
+
+        result = trhp2tw(0, 0.30, 850)
+        self.assertTrue(abs(result + 4.55 ) < 0.1)
+
+        result = trhp2tw(-5, 0.40, 900)
+        self.assertTrue(abs(result + 7.89) < 0.1)
 
 if __name__ == '__main__':
     unittest.main()
