@@ -20,19 +20,57 @@ A single temperature value is set as a threshold from which precipitation
 type is discriminated. If temperature is above the threshold, precipitation
 is classified as rain, otherwise as snow.
 
-Wet bulb temperature
+Air temperature (TA)
 ~~~~~~~~~~~~~~~~~~~~
+
+An air temperature (:math:`T_{a}`) value is used to discriminate precipitation between rain
+and snow. If precipitation occurs above the air temperature value considered,
+rain is assumed. Otherwise, precipitation is classified as snow.
+
+.. math::
+   T_{a} < T_{a_{threshold}} \longrightarrow Snow
+
+   T_{a} > T_{a_{threshold}} \longrightarrow Rain
+
+The best air temperature static threshold may be different depending on the
+region. For more information on which is the most suitable threshold for your
+area, see https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5861046/.
+
+Wet bulb temperature (TW)
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A wet bulb temperature (:math:`T_{w}`) value is used to discriminate precipitation between rain
+and snow. If precipitation occurs above the air temperature value considered,
+rain is assumed. Otherwise, precipitation is classified as snow.
+
+.. math::
+   T_{w} < T_{w_{threshold}} \longrightarrow Snow
+
+   T_{w} > T_{w_{threshold}} \longrightarrow Rain
+
+The best wet bulb temperature static threshold may be different depending on the
+region. Still, it is common to use a wet bulb temperature value of 1.5°C.
 
 #TODO Wet bulb temperature threshold is implemented in this package.
 
 National Mosaic and Multi-Sensor QPE System (NMQ)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-A complete precipitation classification process is defined in the NMQ system (Zhang et al. 2011). However,
-a reduced version of it is considered in this study. If surface temperature is less than 2°C and wet bulb temperature
-less than 0°C, precipitation is in form of snow. Otherwise, the NMQ procedure classifies precipitation as hail, warm
-rain, stratiform rain or convective rain. However, in this study, distinct types of rain are not taken into account and
+A complete precipitation classification process is defined in the NMQ system 
+(Zhang et al. 2011). However, a reduced version of it is considered in this
+study. If surface temperature is less than 2°C and wet bulb temperature less
+than 0°C, precipitation is in form of snow. Otherwise, the NMQ procedure
+classifies precipitation as hail, warm rain, stratiform rain or convective rain.
+However, in this study, distinct types of rain are not taken into account and
 precipitation not categorized as snow is labelled as rain.
 
+.. figure:: _static/nmq_ros.png
+    :width: 400px
+    :align: center
+    :height: 300px
+    :alt: alternate text
+    :figclass: align-center
+
+    Precipitation classification process of NMQ system. (Figure from Zhang et al. 2011)
 
 #TODO other static threshold
 
@@ -55,13 +93,14 @@ between snow, sleet and rain. In our case, the equation is flipped, so
 probability of snow is determined by (1) which may be expressed as
 
 .. math::
-    p(snow) = 1 - \dfrac{1}{1 + e^{22 - 2.7\cdot T - 0.2 \cdot RH}}
+    p(snow) = 1 - \dfrac{1}{1 + e^{22 - 2.7\cdot T - 0.2\cdot RH}}
 
-where T corresponds to temperature in Celsius and RH to relative humidity in %. If p(snow) obtained values are
-below 0.33 precipitation is in form of rain, if they are between 0.33 and 0.66 in form of sleet and classified as snow
+where T corresponds to temperature in Celsius and RH to relative humidity in %.
+If p(snow) obtained values are below 0.33 precipitation is in form of rain, 
+if they are between 0.33 and 0.66 in form of sleet and classified as snow
 if they are above 0.66.
 
-Liu S-shape curve (LiuS)
-~~~~~~~~~~~~~~~~~~~~~~~~
+Ding S-shaped curve (DingS)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #TODO
