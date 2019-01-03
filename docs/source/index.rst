@@ -6,17 +6,19 @@
 Welcome to pyPROS's documentation!
 ==================================
 
+Knowledge of surface precipitation type can be critical during
+snow events at low altitudes or in regions not used to this phenomena.
+For this purpose, previous studies developed several methodologies to 
+discriminate precipitation types using meteorological surface observations.
+Some of them are implemented in this package.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-
-This is inline ``if __name__ == '__main__':``
-
-.. automodule:: pypros.pros
-    :members:
-
-.. automodule:: pypros.dewpoint
-    :members:
+   
+   installation
+   ros_methodologies
+   api
 
 Indices and tables
 ==================
