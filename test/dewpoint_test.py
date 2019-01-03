@@ -1,8 +1,8 @@
 import unittest
-from pypros.dewpoint import td2hr
-from pypros.dewpoint import hr2td
-from pypros.dewpoint import ttd2tw
-from pypros.dewpoint import trhp2tw
+from pypros.psychrometrics import td2hr
+from pypros.psychrometrics import hr2td
+from pypros.psychrometrics import ttd2tw
+from pypros.psychrometrics import trhp2tw
 import numpy
 
 

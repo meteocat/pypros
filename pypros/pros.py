@@ -1,8 +1,8 @@
 '''Functions to calculate the probability of rain or snow.
 For a point or numpy arrays
 '''
-from pypros.dewpoint import td2hr
-from pypros.dewpoint import ttd2tw
+from pypros.psychrometrics import td2hr
+from pypros.psychrometrics import ttd2tw
 import numpy
 
 
