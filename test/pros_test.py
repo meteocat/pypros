@@ -1,6 +1,6 @@
 import unittest
 from pypros.pros import calculate_koistinen_saltikoff
-from pypros.pros import calculate_pros
+from pypros.pros import calculate_pros_refl
 import numpy
 
 
@@ -23,7 +23,7 @@ class TestCalculateRos(unittest.TestCase):
         for i in range(temp.shape[0]):
             self.assertEqual(result[i][0], css(temp[i][0], tempd[i][0]))
 
-    def test_calculate_pros(self):
+    def test_calculate_pros_refl(self):
 
         temp = numpy.ones((3, 6))
         tempd = numpy.ones((3, 6))
@@ -41,7 +41,7 @@ class TestCalculateRos(unittest.TestCase):
             refl[1][i] = refl_values[i]
             refl[2][i] = refl_values[i]
 
-        result = calculate_pros(temp, tempd, refl)
+        result = calculate_pros_refl(temp, tempd, refl)
 
         # With a reflectivity < 1, value is 0
         for i in range(3):
@@ -58,29 +58,29 @@ class TestCalculateRos(unittest.TestCase):
             self.assertEqual(result[2][i], 10 + i)
 
         # Check non numpy values
-        result = calculate_pros(2, 0, 12)
+        result = calculate_pros_refl(2, 0, 12)
         self.assertEqual(result, 8)
 
         # Check wet bulb method
-        result = calculate_pros(2, 0, 12, method='tw')
+        result = calculate_pros_refl(2, 0, 12, method='tw')
         self.assertEqual(result, 13)
-        result = calculate_pros(6, 0, 12, method='tw')
+        result = calculate_pros_refl(6, 0, 12, method='tw')
         self.assertEqual(result, 3)
 
         with self.assertRaises(IndexError) as cm:
-            calculate_pros(23, tempd, numpy.ones((3, 5)))
+            calculate_pros_refl(23, tempd, numpy.ones((3, 5)))
         self.assertEqual(
             "The three parameters must have the same type",
             str(cm.exception))
 
         with self.assertRaises(IndexError) as cm:
-            calculate_pros(temp, tempd, numpy.ones((3, 5)))
+            calculate_pros_refl(temp, tempd, numpy.ones((3, 5)))
         self.assertEqual(
             "The matrices must have the same dimensions",
             str(cm.exception))
 
         with self.assertRaises(ValueError) as cm:
-            calculate_pros(temp, tempd, refl, method='fake')
+            calculate_pros_refl(temp, tempd, refl, method='fake')
         self.assertEqual(
             "Non valid method. Valid values are ks and tw",
             str(cm.exception))

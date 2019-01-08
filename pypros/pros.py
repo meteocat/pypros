@@ -1,40 +1,30 @@
 '''Functions to calculate the probability of rain or snow.
 For a point or numpy arrays
 '''
-from pypros.psychrometrics import td2hr
 from pypros.psychrometrics import ttd2tw
+from pypros.ros_methods import calculate_koistinen_saltikoff
+from pypros.ros_methods import calculate_static_threshold
 import numpy
 
 
-def calculate_koistinen_saltikoff(temp, tempd):
-    """Returns the Koistinen-Saltikoff value.
+def calculate_pros(temp, tempd, method='ks'):
+    if not (type(temp) == type(tempd)):
+        raise IndexError("The three parameters must have the same type")
+    if type(temp) == numpy.ndarray and (temp.shape != tempd.shape):
+        raise IndexError("The matrices must have the same dimensions")
 
-    Koistinen J., Saltikoff E. (1998): Experience of customer products of
-    accumulated snow, sleet and rain,
-    COST 75 Final Seminar on Advanced Weather Radar Systems, Locarno,
-    Switzerland. EUR 18567 EN, 397-406.
-
-    The formula values are
-
-    - prob < 0.3 --> rain
-    - 0.3 < prob < 0.7 --> sleet
-    - prob > 0.7 --> snow
-
-    Both float values or numpy matrices can be passed as input
-    and get as output
-
-    Args:
-        temp (float, numpy array): The temperature in Celsius
-        tempd (float, numpy array): The dew point in Celsius
-
-    Returns:
-        float, numpy array: The Koistinen J., Saltikoff E. formula value
-    """
-    prob = 1 - 1 / (1 + 2.7182818 ** (22.0-2.7*temp-0.2*td2hr(temp, tempd)))
-    return prob
+    if method == 'ks':
+        pros = calculate_koistinen_saltikoff(temp, tempd)
+    elif method == 'tw':
+        t_w = ttd2tw(temp, tempd)
+        pros = calculate_static_threshold(t_w, 1.5)
+    else:
+        raise ValueError("Non valid method. Valid values are ks and tw")
+    
+    return pros
 
 
-def calculate_pros(temp, tempd, refl, method='ks'):
+def calculate_pros_refl(temp, tempd, refl, method='ks'):
     """Calculates the probability of snow. The output classification is as follows:
 
     rain
