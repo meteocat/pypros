@@ -1,8 +1,8 @@
 import unittest
-from pypros.dewpoint import td2hr
-from pypros.dewpoint import hr2td
-from pypros.dewpoint import ttd2tw
-from pypros.dewpoint import trhp2tw
+from pypros.psychrometrics import td2hr
+from pypros.psychrometrics import hr2td
+from pypros.psychrometrics import ttd2tw
+from pypros.psychrometrics import trhp2tw
 import numpy
 
 
@@ -81,23 +81,42 @@ class TestDewpoint(unittest.TestCase):
         self.assertTrue(abs(result[1][0] - 14.13) < 0.1)
         self.assertTrue(abs(result[2][0] - 7.79) < 0.5)  # Divergence at low rh
 
-
     def test_trhp2tw(self):
         '''
         Values checked at https://www.weather.gov/epz/wxcalc_rh
         For an independent result
         '''
-        result = trhp2tw(20,0.20,1013.25)
-        self.assertTrue(abs(result - 9.43) < 0.1)
 
-        result = trhp2tw(10, 0.65, 850)
-        self.assertTrue(abs(result - 6.72) < 0.1)
+        temp = numpy.ones((4, 1))
+        r_h = numpy.ones((4, 1))
+        p = numpy.ones((4, 1))
 
-        result = trhp2tw(0, 0.30, 850)
-        self.assertTrue(abs(result + 4.55 ) < 0.1)
+        temp[0][0] = 20
+        r_h[0][0] = 100
+        p[0][0] = 1013.25
 
-        result = trhp2tw(-5, 0.40, 900)
-        self.assertTrue(abs(result + 7.89) < 0.1)
+        temp[1][0] = 20
+        r_h[1][0] = 52.57
+        p[1][0] = 1013.25
+
+        temp[2][0] = 20
+        r_h[2][0] = 88.29
+        p[2][0] = 1013.25
+
+        temp[3][0] = 20
+        r_h[3][0] = 26.18
+        p[3][0] = 1013.25
+
+        result = trhp2tw(temp, r_h, p)
+
+        self.assertEqual(result.shape[0], temp.shape[0])
+        self.assertEqual(result.shape[1], temp.shape[1])
+
+        self.assertAlmostEqual(result[0][0], 19.999, 2)
+        self.assertAlmostEqual(result[1][0], 14.226, 2)
+        self.assertAlmostEqual(result[2][0], 18.684, 2)
+        self.assertAlmostEqual(result[3][0], 10.407, 2)
+
 
 if __name__ == '__main__':
     unittest.main()
