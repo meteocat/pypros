@@ -1,6 +1,7 @@
 import unittest
 from pypros.ros_methods import calculate_koistinen_saltikoff
 from pypros.ros_methods import calculate_static_threshold
+from pypros.ros_methods import calculate_linear_transition
 from numpy import ones
 
 
@@ -35,6 +36,23 @@ class TestCalculateRosMethods(unittest.TestCase):
         self.assertEqual(result[0][0], 1)
         self.assertEqual(result[1][0], 0)
         self.assertEqual(result[2][0], 1)
+
+    def test_calculate_linear_transition(self):
+        field = ones((5, 1))
+
+        field[0][0] = -0.6
+        field[1][0] = 2.3
+        field[2][0] = 1.0
+        field[3][0] = 1.5
+        field[4][0] = 0.1
+
+        result = calculate_linear_transition(field, 0, 2)
+
+        self.assertEqual(result[0][0], 1)
+        self.assertEqual(result[1][0], 0)
+        self.assertEqual(result[2][0], 0.5)
+        self.assertEqual(result[3][0], 0.25)
+        self.assertEqual(result[4][0], 0.95)
 
 
 def ks_rh(temp, tempd):

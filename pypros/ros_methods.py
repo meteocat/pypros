@@ -49,3 +49,15 @@ def calculate_static_threshold(field, th):
     field[under_th] = 1
 
     return field
+
+
+def calculate_linear_transition(field, th_s, th_r):
+    above_th_r = where(field >= th_r)
+    under_th_s = where(field <= th_s)
+    mixed = where((field < th_r) & (field > th_s))
+
+    field[above_th_r] = 0
+    field[under_th_s] = 1
+    field[mixed] = (field[mixed] - th_r) / (th_s - th_r) 
+
+    return field
