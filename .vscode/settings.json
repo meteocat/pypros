@@ -1,14 +1,21 @@
 {
     "autoDocstring.docstringFormat": "google",
     "cSpell.words": [
+        "errno",
         "koistinen",
         "ndarray",
         "numpy",
+        "osgeo",
+        "psychrometrics",
         "pypros",
         "refl",
         "reflectivity",
         "saltikoff",
-        "tempd"
+        "tair",
+        "tdew",
+        "tempd",
+        "trhp",
+        "twet"
     ],
     "python.pythonPath": "~/anaconda3/envs/pyrasp/bin/python",
     "python.unitTest.unittestArgs": [

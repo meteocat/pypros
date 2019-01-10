@@ -1,100 +1,117 @@
 import unittest
-from pypros.pros import calculate_koistinen_saltikoff
-from pypros.pros import calculate_pros_refl
 import numpy
+from osgeo import gdal, osr
+from pypros.pros import PyPros
 
 
 class TestCalculateRos(unittest.TestCase):
-    def test_calculate_koistinen_saltikoff(self):
-        temp = numpy.ones((3, 1))
-        tempd = numpy.ones((3, 1))
-
-        temp[0][0] = 20
-        tempd[0][0] = 20
-
-        temp[1][0] = 2
-        tempd[1][0] = 0
-
-        temp[2][0] = -1
-        tempd[2][0] = -1
-
-        result = calculate_koistinen_saltikoff(temp, tempd)
-
-        for i in range(temp.shape[0]):
-            self.assertEqual(result[i][0], css(temp[i][0], tempd[i][0]))
-
-    def test_calculate_pros_refl(self):
-
-        temp = numpy.ones((3, 6))
-        tempd = numpy.ones((3, 6))
-        refl = numpy.ones((3, 6))
+    @classmethod
+    def setUpClass(cls):
+        cls.data_format = {'vars_files': ['tair', 'tdew', 'refl']}
+        cls.variables_file = ['/tmp/tair.tif',
+                              '/tmp/tdew.tif',
+                              '/tmp/refl.tif']
+        size = [3, 3]
+        tair = numpy.ones(size)
+        tdew = numpy.ones(size)
+        refl = numpy.ones(size)
 
         refl_values = [0.2, 2, 6, 12, 16, 26]
-        for i in range(6):
-            temp[0][i] = 20
-            tempd[0][i] = 20
-            temp[1][i] = 2
-            tempd[1][i] = 0
-            temp[2][i] = -1
-            tempd[2][i] = -1
+        for i in range(3):
+            tair[0][i] = 20
+            tdew[0][i] = 20
+            tair[1][i] = 2
+            tdew[1][i] = 0
+            tair[2][i] = -1
+            tdew[2][i] = -1
             refl[0][i] = refl_values[i]
             refl[1][i] = refl_values[i]
             refl[2][i] = refl_values[i]
 
-        result = calculate_pros_refl(temp, tempd, refl)
+        fields = [tair, tdew, refl]
 
-        # With a reflectivity < 1, value is 0
-        for i in range(3):
-            self.assertEqual(result[i][0], 0)
+        for i in range(len(fields)):
+            driver = gdal.GetDriverByName('GTiff')
+            d_s = driver.Create(cls.variables_file[i], size[1], size[0], 1,
+                                gdal.GDT_Float32)
+
+            d_s.GetRasterBand(1).WriteArray(fields[i])
+            d_s.SetGeoTransform((0, 100, 0, 200, 0, -100))
+
+            proj = osr.SpatialReference()
+            proj.ImportFromEPSG(25831)
+
+            d_s.SetProjection(proj.ExportToWkt())
+
+            d_s = None
+
+        cls.method = 'ks'
+
+    def test_init(self):
+        inst = PyPros(self.variables_file, self.method, self.data_format)
+        self.assertEqual(inst.result.shape, (3, 3))
+
+        inst.save_file(inst.result, "/tmp/out.tiff")
+
+    def test_init_different_methods(self):
+        inst = PyPros(self.variables_file, 'ks', self.data_format)
+        self.assertEqual(inst.result.shape, (3, 3))
+
+        inst = PyPros(self.variables_file, 'static_tw', self.data_format)
+        self.assertEqual(inst.result.shape, (3, 3))
+
+        inst = PyPros(self.variables_file, 'static_ta', self.data_format)
+        self.assertEqual(inst.result.shape, (3, 3))
+
+        inst = PyPros(self.variables_file, 'linear_tr', self.data_format)
+        self.assertEqual(inst.result.shape, (3, 3))
+
+    def test_refl_mask(self):
+        inst = PyPros(self.variables_file, 'ks', self.data_format)
+        pros_masked = inst.refl_mask()
 
         # rain
-        for i in range(1, 6):
-            self.assertEqual(result[0][i], i)
+        for i in range(1, 3):
+            self.assertEqual(pros_masked[0][i], i)
         # sleet
-        for i in range(1, 6):
-            self.assertEqual(result[1][i], 5 + i)
+        for i in range(1, 3):
+            self.assertEqual(pros_masked[1][i], 5 + i)
         # snow
-        for i in range(1, 6):
-            self.assertEqual(result[2][i], 10 + i)
+        for i in range(1, 3):
+            self.assertEqual(pros_masked[2][i], 10 + i)
 
-        # Check non numpy values
-        result = calculate_pros_refl(2, 0, 12)
-        self.assertEqual(result, 8)
+        inst = PyPros(self.variables_file, 'static_tw', self.data_format)
+        pros_masked = inst.refl_mask()
 
-        # Check wet bulb method
-        result = calculate_pros_refl(2, 0, 12, method='tw')
-        self.assertEqual(result, 13)
-        result = calculate_pros_refl(6, 0, 12, method='tw')
-        self.assertEqual(result, 3)
+        # rain
+        for i in range(1, 3):
+            self.assertEqual(pros_masked[0][i], i)
+        # snow
+        for i in range(1, 3):
+            self.assertEqual(pros_masked[2][i], 10 + i)
 
-        with self.assertRaises(IndexError) as cm:
-            calculate_pros_refl(23, tempd, numpy.ones((3, 5)))
-        self.assertEqual(
-            "The three parameters must have the same type",
-            str(cm.exception))
+        inst = PyPros(self.variables_file, 'static_ta', self.data_format)
+        pros_masked = inst.refl_mask()
 
-        with self.assertRaises(IndexError) as cm:
-            calculate_pros_refl(temp, tempd, numpy.ones((3, 5)))
-        self.assertEqual(
-            "The matrices must have the same dimensions",
-            str(cm.exception))
+        # rain
+        for i in range(1, 3):
+            self.assertEqual(pros_masked[0][i], i)
+        # snow
+        for i in range(1, 3):
+            self.assertEqual(pros_masked[2][i], 10 + i)
 
-        with self.assertRaises(ValueError) as cm:
-            calculate_pros_refl(temp, tempd, refl, method='fake')
-        self.assertEqual(
-            "Non valid method. Valid values are ks and tw",
-            str(cm.exception))
+        inst = PyPros(self.variables_file, 'linear_tr', self.data_format)
+        pros_masked = inst.refl_mask()
 
-
-def css(temp, tempd):
-    '''
-    Calculates the original koistinen_saltikoff
-    '''
-    es = 6.11 * 10**(7.5*tempd/(237.7+tempd))
-    e = 6.11 * 10**(7.5*temp/(237.7+temp))
-
-    hr = 100*(es/e)
-    return 1 - 1/(1+pow(2.7182818, 22.-2.7*temp-0.2*hr))
+        # rain
+        for i in range(1, 3):
+            self.assertEqual(pros_masked[0][i], i)
+        # sleet
+        for i in range(1, 3):
+            self.assertEqual(pros_masked[1][i], 5 + i)
+        # snow
+        for i in range(1, 3):
+            self.assertEqual(pros_masked[2][i], 10 + i)
 
 
 if __name__ == '__main__':

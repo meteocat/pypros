@@ -54,6 +54,12 @@ class TestCalculateRosMethods(unittest.TestCase):
         self.assertEqual(result[3][0], 0.25)
         self.assertEqual(result[4][0], 0.95)
 
+        with self.assertRaises(ValueError) as cm:
+            calculate_linear_transition(field, 2, 0)
+        self.assertEqual(
+            "Incorrect thresholds, th_s value must be smaller than th_r",
+            str(cm.exception))
+
 
 def ks_rh(temp, tempd):
     """

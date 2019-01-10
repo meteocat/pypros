@@ -52,12 +52,36 @@ def calculate_static_threshold(field, th):
 
 
 def calculate_linear_transition(field, th_s, th_r):
+    """Calculates the precipitation type based on two threshold
+    values, one for rain and one for snow. Assumes a linear
+    transition between them.
+    If value >= th_r --> rain --> 0
+    If value <= th_s --> snow --> 1
+    If th_s < value < th_r --> mixed --> (0, 1)
+
+    Args:
+        field (float, numpy array): Meteorological variable field
+        th_s (float): Snow threshold. Values below this threshold
+                      classified as snow.
+        th_r (float): Rain threshold. Values above this threshold
+                      classified as rain.
+
+    Raises:
+        ValueError: Raised if th_r is smaller than th_s.
+
+    Returns:
+        float, numpy array: Precipitation type field
+    """
+    if th_r <= th_s:
+        raise ValueError("Incorrect thresholds, th_s value must be " +
+                         "smaller than th_r")
+
     above_th_r = where(field >= th_r)
     under_th_s = where(field <= th_s)
     mixed = where((field < th_r) & (field > th_s))
 
     field[above_th_r] = 0
     field[under_th_s] = 1
-    field[mixed] = (field[mixed] - th_r) / (th_s - th_r) 
+    field[mixed] = (field[mixed] - th_r) / (th_s - th_r)
 
     return field
