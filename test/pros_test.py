@@ -11,6 +11,9 @@ class TestCalculateRos(unittest.TestCase):
         cls.variables_file = ['/tmp/tair.tif',
                               '/tmp/tdew.tif',
                               '/tmp/refl.tif']
+        cls.method = 'ks'
+        cls.threshold = None
+
         size = [3, 3]
         tair = numpy.ones(size)
         tdew = numpy.ones(size)
@@ -54,20 +57,47 @@ class TestCalculateRos(unittest.TestCase):
         inst.save_file(inst.result, "/tmp/out.tiff")
 
     def test_init_different_methods(self):
-        inst = PyPros(self.variables_file, 'ks', self.data_format)
+        inst = PyPros(self.variables_file, 'ks', self.threshold,
+                      self.data_format)
         self.assertEqual(inst.result.shape, (3, 3))
 
-        inst = PyPros(self.variables_file, 'static_tw', self.data_format)
+        inst = PyPros(self.variables_file, 'static_tw', 1.5,
+                      self.data_format)
         self.assertEqual(inst.result.shape, (3, 3))
 
-        inst = PyPros(self.variables_file, 'static_ta', self.data_format)
+        inst = PyPros(self.variables_file, 'static_ta', 1.0,
+                      self.data_format)
         self.assertEqual(inst.result.shape, (3, 3))
 
-        inst = PyPros(self.variables_file, 'linear_tr', self.data_format)
+        inst = PyPros(self.variables_file, 'linear_tr', [0, 3],
+                      self.data_format)
         self.assertEqual(inst.result.shape, (3, 3))
+
+    def test_init_different_methods_wrong(self):
+        with self.assertRaises(ValueError) as cm:
+            PyPros(self.variables_file, 'static_tw', '1',
+                   self.data_format)
+        self.assertEqual(
+            'The threshold for the method {} must be a float',
+            str(cm.exception))
+
+        with self.assertRaises(ValueError) as cm:
+            PyPros(self.variables_file, 'static_ta', '1.5',
+                   self.data_format)
+        self.assertEqual(
+            'The threshold for the method {} must be a float',
+            str(cm.exception))
+
+        with self.assertRaises(ValueError) as cm:
+            PyPros(self.variables_file, 'linear_tr', [3],
+                   self.data_format)
+        self.assertEqual(
+            'The thresholds for the method {} must be a list/tuple' +
+            ' of length two', str(cm.exception))
 
     def test_refl_mask(self):
-        inst = PyPros(self.variables_file, 'ks', self.data_format)
+        inst = PyPros(self.variables_file, 'ks', self.threshold,
+                      self.data_format)
         pros_masked = inst.refl_mask()
 
         # rain
@@ -80,7 +110,8 @@ class TestCalculateRos(unittest.TestCase):
         for i in range(1, 3):
             self.assertEqual(pros_masked[2][i], 10 + i)
 
-        inst = PyPros(self.variables_file, 'static_tw', self.data_format)
+        inst = PyPros(self.variables_file, 'static_tw', 1.5,
+                      self.data_format)
         pros_masked = inst.refl_mask()
 
         # rain
@@ -90,7 +121,8 @@ class TestCalculateRos(unittest.TestCase):
         for i in range(1, 3):
             self.assertEqual(pros_masked[2][i], 10 + i)
 
-        inst = PyPros(self.variables_file, 'static_ta', self.data_format)
+        inst = PyPros(self.variables_file, 'static_ta', 1.0,
+                      self.data_format)
         pros_masked = inst.refl_mask()
 
         # rain
@@ -100,7 +132,8 @@ class TestCalculateRos(unittest.TestCase):
         for i in range(1, 3):
             self.assertEqual(pros_masked[2][i], 10 + i)
 
-        inst = PyPros(self.variables_file, 'linear_tr', self.data_format)
+        inst = PyPros(self.variables_file, 'linear_tr', [0, 3],
+                      self.data_format)
         pros_masked = inst.refl_mask()
 
         # rain

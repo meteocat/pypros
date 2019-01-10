@@ -14,7 +14,8 @@ class PyPros:
     Main project class. Discriminates precipitation type considering
     different methodologies using surface observations.
     """
-    def __init__(self, variables_file, method, data_format=None):
+    def __init__(self, variables_file, method='ks', threshold=None,
+                 data_format=None):
         """
         Args:
             variables_file (str, list): The file paths containing air
@@ -30,6 +31,14 @@ class PyPros:
                             - static_ta: Air temperature threshold
                             - linear_tr: Linear transition between rain
                                          and snow
+                            Default to ks.
+            threshold (float, list): Threshold value(s) to use in the
+                                     different methods available.
+                                     Defaults to:
+                                     - static_tw: 1.5
+                                     - static_ta: 0.0
+                                     - linear_tr: [0, 3]
+
             data_format (dict, optional): Defaults to None. The order of the
                                           variables in the variables files.
                                           Defaults to:
@@ -45,6 +54,37 @@ class PyPros:
         else:
             self.data_format = data_format
 
+        if threshold is None:
+            if method == 'static_ta':
+                self.threshold = 0
+            elif method == 'static_tw':
+                self.threshold = 1.5
+            elif method == 'linear_tr':
+                self.threshold = [0, 3]
+            elif method == 'ks':
+                None
+            else:
+                raise ValueError('Non valid method. Valid values are ks and ' +
+                                 'static_tw, static_ta and linear_tr')
+        else:
+            if method == 'static_ta' or method == 'static_tw':
+                if not type(threshold) == float:
+                    raise ValueError('The threshold for the method {} must ' +
+                                     'be a float'.format(method))
+            elif method == 'linear_tr':
+                if (not (type(threshold) == list or type(threshold) == tuple)
+                   or len(threshold) != 2):
+                    raise ValueError('The thresholds for the method {} must ' +
+                                     'be a list/tuple of length ' +
+                                     'two'.format(method))
+            elif method == 'ks':
+                None
+            else:
+                raise ValueError('Non valid method. Valid values are ks and ' +
+                                 'static_tw, static_ta and linear_tr')
+
+            self.threshold = threshold
+
         self.__read_variables_files__(variables_file)
         self.method = method
 
@@ -55,14 +95,12 @@ class PyPros:
             self.result = calculate_koistinen_saltikoff(tair, tdew)
         elif method == 'static_tw':
             twet = ttd2tw(tair, tdew)
-            self.result = calculate_static_threshold(twet, 1.5)
+            self.result = calculate_static_threshold(twet, self.threshold)
         elif method == 'static_ta':
-            self.result = calculate_static_threshold(tair, 1.0)
+            self.result = calculate_static_threshold(tair, self.threshold)
         elif method == 'linear_tr':
-            self.result = calculate_linear_transition(tair, 0.0, 3.0)
-        else:
-            raise ValueError("Non valid method. Valid values are ks and" +
-                             "static_tw, static_ta and linear_tr")
+            self.result = calculate_linear_transition(tair, self.threshold[0],
+                                                      self.threshold[1])
 
     def __read_variables_files__(self, variables_file):
         # TODO check if fields have the same shape
