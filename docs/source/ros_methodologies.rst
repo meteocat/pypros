@@ -28,13 +28,14 @@ and snow. If precipitation occurs above the air temperature value considered,
 rain is assumed. Otherwise, precipitation is classified as snow.
 
 .. math::
-   T_{a} < T_{a_{threshold}} \longrightarrow Snow
+   T_{a} <= T_{a_{threshold}} \longrightarrow Snow
 
    T_{a} > T_{a_{threshold}} \longrightarrow Rain
 
 The best air temperature static threshold may be different depending on the
 region. For more information on which is the most suitable threshold for your
 area, see https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5861046/.
+
 
 Wet bulb temperature (TW)
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -44,14 +45,13 @@ and snow. If precipitation occurs above the air temperature value considered,
 rain is assumed. Otherwise, precipitation is classified as snow.
 
 .. math::
-   T_{w} < T_{w_{threshold}} \longrightarrow Snow
+   T_{w} <= T_{w_{threshold}} \longrightarrow Snow
 
    T_{w} > T_{w_{threshold}} \longrightarrow Rain
 
 The best wet bulb temperature static threshold may be different depending on the
 region. Still, it is common to use a wet bulb temperature value of 1.5°C.
 
-#TODO Wet bulb temperature threshold is implemented in this package.
 
 National Mosaic and Multi-Sensor QPE System (NMQ)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -76,14 +76,25 @@ precipitation not categorized as snow is labelled as rain.
 
 Linear transition
 -----------------
+Two threshold values are set to discriminate precipitation type between rain (th_r)
+and snow (th_r). It can be either used with any meteorological field, but with
+thresholds properly defined. If a value of the meteorological field is above th_r,
+precipitation is classified as rain. On the other hand, if the values is below
+th_s, precipitation is classified as snow. A linear transition is assumed for 
+values between th_s and th_r, then precipitation is classified as a mixed type.
 
-#TODO
+If the meteorological field chosen to discriminate air  is air temperature:
 
-Sigmoidal curves
-----------------
+.. math::
+   T_{a} <= T_{snow} \longrightarrow Snow
+
+   T_{snow} < T_{a} < T_{rain} \longrightarrow Mixed
+
+   T_{a} >= T_{rain} \longrightarrow Rain
+
 
 Koistinen and Saltikoff (KS)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------
 
 The methodology proposed by Koistinen and Saltikoff (1998) provides an 
 empirical formula to calculate the probability of precipitation type using
@@ -99,6 +110,11 @@ where T corresponds to temperature in Celsius and RH to relative humidity in %.
 If p(snow) obtained values are below 0.33 precipitation is in form of rain, 
 if they are between 0.33 and 0.66 in form of sleet and classified as snow
 if they are above 0.66.
+
+Sigmoidal curves
+----------------
+
+#TODO
 
 Ding S-shaped curve (DingS)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
