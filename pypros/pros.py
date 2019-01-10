@@ -103,7 +103,6 @@ class PyPros:
                                                       self.threshold[1])
 
     def __read_variables_files__(self, variables_file):
-        # TODO check if fields have the same shape
         if isinstance(variables_file, (list,)):
             self.variables = None
             for layer_file in variables_file:
@@ -117,9 +116,14 @@ class PyPros:
                     if self.variables is None:
                         self.variables = layer_data
                     else:
-                        self.variables = np.concatenate((self.variables,
-                                                         layer_data), axis=0)
-        else:
+                        try:
+                            self.variables = np.concatenate((self.variables,
+                                                             layer_data),
+                                                            axis=0)
+                        except Exception:
+                            raise ValueError('Variables fields must have the' +
+                                             ' same shape.')
+        else:   
             d_s = gdal.Open(variables_file)
             self.variables = d_s.ReadAsArray()
 

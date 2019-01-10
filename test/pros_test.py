@@ -51,10 +51,37 @@ class TestCalculateRos(unittest.TestCase):
         cls.method = 'ks'
 
     def test_init(self):
-        inst = PyPros(self.variables_file, self.method, self.data_format)
+        inst = PyPros(self.variables_file, self.method, self.threshold,
+                      self.data_format)
         self.assertEqual(inst.result.shape, (3, 3))
 
         inst.save_file(inst.result, "/tmp/out.tiff")
+
+    def test_init_wrong_size(self):
+        size = [1, 1]
+        wrong = numpy.ones(size)
+        wrong_file = '/tmp/wrong.tif'
+        driver = gdal.GetDriverByName('GTiff')
+        d_s = driver.Create(wrong_file, size[1], size[0], 1,
+                            gdal.GDT_Float32)
+
+        d_s.GetRasterBand(1).WriteArray(wrong)
+        d_s.SetGeoTransform((0, 100, 0, 200, 0, -100))
+
+        proj = osr.SpatialReference()
+        proj.ImportFromEPSG(25831)
+
+        d_s.SetProjection(proj.ExportToWkt())
+
+        d_s = None
+
+        variables_file = ['/tmp/tair.tif', wrong_file]
+        with self.assertRaises(ValueError) as cm:
+            PyPros(variables_file, self.method, self.threshold,
+                   self.data_format)
+        self.assertEqual(
+            'Variables fields must have the same shape.',
+            str(cm.exception))
 
     def test_init_different_methods(self):
         inst = PyPros(self.variables_file, 'ks', self.threshold,
