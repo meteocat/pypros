@@ -3,6 +3,7 @@ from pypros.psychrometrics import td2hr
 from pypros.psychrometrics import hr2td
 from pypros.psychrometrics import ttd2tw
 from pypros.psychrometrics import trhp2tw
+from pypros.psychrometrics import get_p_from_z
 import numpy
 
 
@@ -81,6 +82,20 @@ class TestDewpoint(unittest.TestCase):
         self.assertTrue(abs(result[1][0] - 14.13) < 0.1)
         self.assertTrue(abs(result[2][0] - 7.79) < 0.5)  # Divergence at low rh
 
+    def test_get_p_from_z(self):
+        z = numpy.ones((4,1))
+        z[0][0] = 0
+        z[1][0] = 630
+        z[2][0] = 1500
+        z[3][0] = 3000
+        
+        p = get_p_from_z(z)
+        
+        self.assertAlmostEqual(p[0][0], 1013.25, 2)
+        self.assertAlmostEqual(p[1][0], 940.80, 2)
+        self.assertAlmostEqual(p[2][0], 850.63, 2)
+        self.assertAlmostEqual(p[3][0], 718.15, 2)
+
     def test_trhp2tw(self):
         '''
         Values checked at https://www.weather.gov/epz/wxcalc_rh
@@ -89,33 +104,33 @@ class TestDewpoint(unittest.TestCase):
 
         temp = numpy.ones((4, 1))
         r_h = numpy.ones((4, 1))
-        p = numpy.ones((4, 1))
+        z = numpy.ones((4, 1))
 
         temp[0][0] = 20
         r_h[0][0] = 100
-        p[0][0] = 1013.25
+        z[0][0] = 0
 
         temp[1][0] = 20
         r_h[1][0] = 52.57
-        p[1][0] = 1013.25
+        z[1][0] = 630
 
         temp[2][0] = 20
         r_h[2][0] = 88.29
-        p[2][0] = 1013.25
+        z[2][0] = 1500
 
         temp[3][0] = 20
         r_h[3][0] = 26.18
-        p[3][0] = 1013.25
+        z[3][0] = 3000
 
-        result = trhp2tw(temp, r_h, p)
+        result = trhp2tw(temp, r_h, z)
 
         self.assertEqual(result.shape[0], temp.shape[0])
         self.assertEqual(result.shape[1], temp.shape[1])
 
-        self.assertAlmostEqual(result[0][0], 19.999, 2)
-        self.assertAlmostEqual(result[1][0], 14.226, 2)
-        self.assertAlmostEqual(result[2][0], 18.684, 2)
-        self.assertAlmostEqual(result[3][0], 10.407, 2)
+        self.assertAlmostEqual(result[0][0], 20.000, 2)
+        self.assertAlmostEqual(result[1][0], 14.057, 2)
+        self.assertAlmostEqual(result[2][0], 18.608, 2)
+        self.assertAlmostEqual(result[3][0], 8.928, 2)
 
 
 if __name__ == '__main__':
