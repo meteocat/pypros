@@ -7,9 +7,10 @@ from pypros.pros import PyPros
 class TestCalculateRos(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.data_format = {'vars_files': ['tair', 'tdew', 'refl']}
+        cls.data_format = {'vars_files': ['tair', 'tdew', 'dem', 'refl']}
         cls.variables_file = ['/tmp/tair.tif',
                               '/tmp/tdew.tif',
+                              '/tmp/dem.tif',
                               '/tmp/refl.tif']
         cls.method = 'ks'
         cls.threshold = None
@@ -17,6 +18,7 @@ class TestCalculateRos(unittest.TestCase):
         size = [3, 3]
         tair = numpy.ones(size)
         tdew = numpy.ones(size)
+        dem = numpy.ones(size)
         refl = numpy.ones(size)
 
         refl_values = [0.2, 2, 6, 12, 16, 26]
@@ -27,11 +29,14 @@ class TestCalculateRos(unittest.TestCase):
             tdew[1][i] = 0
             tair[2][i] = -1
             tdew[2][i] = -1
+            dem[0][i] = 0
+            dem[1][i] = 1500
+            dem[2][i] = 3000
             refl[0][i] = refl_values[i]
             refl[1][i] = refl_values[i]
             refl[2][i] = refl_values[i]
 
-        fields = [tair, tdew, refl]
+        fields = [tair, tdew, dem, refl]
 
         for i in range(len(fields)):
             driver = gdal.GetDriverByName('GTiff')
@@ -100,7 +105,20 @@ class TestCalculateRos(unittest.TestCase):
                       self.data_format)
         self.assertEqual(inst.result.shape, (3, 3))
 
+    def test_init_twet_without_dem(self):
+        variables_file = ['/tmp/tair.tif', '/tmp/tdew.tif']
+        data_format = {'vars_files': ['tair', 'tdew']}
+        try:
+            PyPros(variables_file, 'static_tw', 1.5,
+                   data_format)
+        except Exception as cm:
+            self.assertEqual('Since no DEM is supplied, wet bulb ' +
+                             'temperature calculations will assume ' +
+                             'a constant pressure of 1013.25 hPa.',
+                             str(cm.exception))
+
     def test_init_different_methods_wrong(self):
+
         with self.assertRaises(ValueError) as cm:
             PyPros(self.variables_file, 'static_tw', '1',
                    self.data_format)
@@ -123,6 +141,7 @@ class TestCalculateRos(unittest.TestCase):
             ' of length two', str(cm.exception))
 
     def test_refl_mask(self):
+
         inst = PyPros(self.variables_file, 'ks', self.threshold,
                       self.data_format)
         pros_masked = inst.refl_mask()

@@ -4,6 +4,7 @@ For a point or numpy arrays
 import numpy as np
 from osgeo import gdal, osr
 from pypros.psychrometrics import ttd2tw
+from pypros.psychrometrics import trhp2tw
 from pypros.ros_methods import calculate_koistinen_saltikoff
 from pypros.ros_methods import calculate_static_threshold
 from pypros.ros_methods import calculate_linear_transition
@@ -20,8 +21,8 @@ class PyPros:
         Args:
             variables_file (str, list): The file paths containing air
                                         temperature, dew point
-                                        temperature and (reflectivity)
-                                        fields.
+                                        temperature and (digital elevation
+                                        model, reflectivity) fields.
             method (str): The precipitation type discrimination
                           method to use.
 
@@ -44,13 +45,14 @@ class PyPros:
                                           Defaults to:
                                           {'vars_files': ['tair',
                                                           'tdew',
+                                                          'dem',
                                                           'refl']}
 
         Raises:
             ValueError: Raised when the method is not valid
         """
         if data_format is None:
-            self.data_format = {'vars_files': ['tair', 'tdew', 'refl']}
+            self.data_format = {'vars_files': ['tair', 'tdew', 'dem', 'refl']}
         else:
             self.data_format = data_format
 
@@ -94,7 +96,16 @@ class PyPros:
         if method == 'ks':
             self.result = calculate_koistinen_saltikoff(tair, tdew)
         elif method == 'static_tw':
-            twet = ttd2tw(tair, tdew)
+            try:
+                dem = self.variables[
+                      self.data_format['vars_files'].index('dem')]
+            except ValueError:
+                print('Since no DEM is supplied, wet bulb temperature ' +
+                      'calculations will assume a constant pressure of ' +
+                      '1013.25 hPa.')
+                twet = ttd2tw(tair, tdew)
+            else:
+                twet = trhp2tw(tair, tdew, dem)
             self.result = calculate_static_threshold(twet, self.threshold)
         elif method == 'static_ta':
             self.result = calculate_static_threshold(tair, self.threshold)
@@ -123,7 +134,7 @@ class PyPros:
                         except Exception:
                             raise ValueError('Variables fields must have the' +
                                              ' same shape.')
-        else:   
+        else:
             d_s = gdal.Open(variables_file)
             self.variables = d_s.ReadAsArray()
 
@@ -182,6 +193,15 @@ class PyPros:
         Returns:
             float, numpy array: The probability of snow classification value
         """
+        '''
+        try:
+        refl = self.variables[self.data_format['vars_files'].index('refl')]
+        except ValueError:
+            print('The data format may not be properly defined or ' +
+                  'Reflectivity field is not supplied.')
+            raise
+        '''
+        print(self.variables)
         refl = self.variables[self.data_format['vars_files'].index('refl')]
         refl_bins = np.array([1, 5, 10, 15, 25])
         refl_class = np.digitize(refl, refl_bins)
