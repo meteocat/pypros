@@ -73,7 +73,7 @@ def ttd2tw(temp, tempd):
             arctan(0.023101*rh) - 4.686035)
 
 
-def trhp2tw(temp, rh, p):
+def trhp2tw(temp, rh, z):
     """Gets the wet bulb temperature from the temperature, relative humidity
     and pressure. Formula taken from:
     https://www.weather.gov/epz/wxcalc_wetbulb (Brice and Hall, 2003)
@@ -81,7 +81,7 @@ def trhp2tw(temp, rh, p):
     Args:
         temp (float, numpy array) -- The temperature in Celsius
         rh (float, numpy array) -- The relative humidity in [0,1]
-        p (float, numpy array) -- The pressure in hPa
+        z (float, numpy array) -- The altitude in metres
 
     Returns:
         float, numpy array: The wet bulb temperature in Celsius
@@ -90,12 +90,11 @@ def trhp2tw(temp, rh, p):
 
     temp = temp.reshape(-1)
     rh = rh.reshape(-1)
-    p = p.reshape(-1)
+    p = get_p_from_z(z).reshape(-1)
 
     tw_out = []
 
     for i in range(len(temp)):
-
         rh_s = rh[i] + 1
         tw = temp[i]
 
@@ -113,3 +112,18 @@ def trhp2tw(temp, rh, p):
     tw_out = tw_out.reshape(shape)
 
     return tw_out
+
+
+def get_p_from_z(z):
+    """Gets pressure field from altitude field considering an OACI atmosphere.
+
+    Args:
+        z (float, numpy array): The altitude in metres
+
+    Returns:
+        p: The pressure field in hPa
+    """
+
+    p = 1013.25 * (1 - 0.0065 * z / (15 + 0.0065 * z + 273.15)) ** 5.257
+
+    return p
