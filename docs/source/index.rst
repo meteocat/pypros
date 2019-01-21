@@ -23,6 +23,7 @@ Some of them are implemented in this package.
    installation
    ros_methodologies
    api
+   examples
 
 Indices and tables
 ==================

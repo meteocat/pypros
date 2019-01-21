@@ -23,8 +23,9 @@ class PyPros:
                                         temperature, dew point
                                         temperature and (digital elevation
                                         model, reflectivity) fields.
+
             method (str): The precipitation type discrimination
-                          method to use.
+                          method to use. Defaults to ks.
 
                           Available:
                             - ks       : Koistinen and Saltikoff method
@@ -32,13 +33,14 @@ class PyPros:
                             - static_ta: Air temperature threshold
                             - linear_tr: Linear transition between rain
                                          and snow
-                            Default to ks.
+
             threshold (float, list): Threshold value(s) to use in the
                                      different methods available.
+
                                      Defaults to:
-                                     - static_tw: 1.5
-                                     - static_ta: 0.0
-                                     - linear_tr: [0, 3]
+                                        - static_tw: 1.5
+                                        - static_ta: 0.0
+                                        - linear_tr: [0, 3]
 
             data_format (dict, optional): Defaults to None. The order of the
                                           variables in the variables files.
