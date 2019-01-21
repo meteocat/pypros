@@ -4,7 +4,7 @@ For a point or numpy arrays
 import numpy as np
 from osgeo import gdal, osr
 from pypros.psychrometrics import ttd2tw
-from pypros.psychrometrics import trhp2tw
+from pypros.psychrometrics import get_tw_sadeghi
 from pypros.ros_methods import calculate_koistinen_saltikoff
 from pypros.ros_methods import calculate_static_threshold
 from pypros.ros_methods import calculate_linear_transition
@@ -105,7 +105,7 @@ class PyPros:
                       '1013.25 hPa.')
                 twet = ttd2tw(tair, tdew)
             else:
-                twet = trhp2tw(tair, tdew, dem)
+                twet = get_tw_sadeghi(tair, tdew, dem)
             self.result = calculate_static_threshold(twet, self.threshold)
         elif method == 'static_ta':
             self.result = calculate_static_threshold(tair, self.threshold)
@@ -201,7 +201,6 @@ class PyPros:
                   'Reflectivity field is not supplied.')
             raise
         '''
-        print(self.variables)
         refl = self.variables[self.data_format['vars_files'].index('refl')]
         refl_bins = np.array([1, 5, 10, 15, 25])
         refl_class = np.digitize(refl, refl_bins)
