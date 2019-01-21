@@ -90,7 +90,7 @@ def trhp2tw(temp, rh, z):
 
     temp = temp.reshape(-1)
     rh = rh.reshape(-1)
-    p = get_p_from_z(z).reshape(-1)
+    p = _get_p_from_z(z).reshape(-1)
 
     tw_out = []
 
@@ -114,7 +114,7 @@ def trhp2tw(temp, rh, z):
     return tw_out
 
 
-def get_p_from_z(z):
+def _get_p_from_z(z):
     """Gets pressure field from altitude field considering an OACI atmosphere.
 
     Args:
@@ -127,3 +127,33 @@ def get_p_from_z(z):
     p = 1013.25 * (1 - 0.0065 * z / (15 + 0.0065 * z + 273.15)) ** 5.257
 
     return p
+
+
+def get_tw_sadeghi(tair, tdew, z):
+    '''Gets the wet bulb temperature from air temperature, dew point
+    temperature and pressure. Formula taken from:
+    https://journals.ametsoc.org/doi/pdf/10.1175/JTECH-D-12-00191.1
+
+    Results close to trhp2tw, but computationally efficient
+
+    Args:
+        tair (float, numpy array): The air temperature in Celsius
+        tdew (float, numpy array): The dew point temperature in Celsius
+        z (float, numpy array): The altitude in metres
+
+    Returns:
+        float, numpy array: The wet bulb temperature in Celsius
+    '''
+
+    p = _get_p_from_z(z) / 10
+    ea = 0.611*(10**(7.5*tdew/(237.3+tdew)))
+
+    psych_ct = 6.42e-4
+
+    lambda0 = 0.0014 * 2.71828**(0.027 * tair)
+    xi = -3*(10**-7)*tair**3 - (10**-5)*tair**2 + 2*(10**-5)*tair + (
+         4.44*(10**-2))
+    phi = xi + psych_ct*p
+    psi = 0.611 - psych_ct*p*(tair) - ea
+
+    return (-phi + (phi**2 - 4*lambda0*psi)**(0.5)) / (2*lambda0)
