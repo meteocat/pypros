@@ -201,7 +201,6 @@ class PyPros:
                   'Reflectivity field is not supplied.')
             raise
         '''
-        print(self.variables)
         refl = self.variables[self.data_format['vars_files'].index('refl')]
         refl_bins = np.array([1, 5, 10, 15, 25])
         refl_class = np.digitize(refl, refl_bins)
