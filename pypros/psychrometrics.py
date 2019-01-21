@@ -1,9 +1,11 @@
 '''
-Dew point calculations
+Psychrometrics calculations
 '''
 from numpy import power
 from numpy import arctan
+from numpy import array
 from math import exp
+
 
 def td2hr(temp, tempd):
     """
@@ -70,28 +72,88 @@ def ttd2tw(temp, tempd):
             0.00391838*power(rh, 1.5) *
             arctan(0.023101*rh) - 4.686035)
 
-def trhp2tw(temp, rh, p):
+
+def trhp2tw(temp, rh, z):
     """Gets the wet bulb temperature from the temperature, relative humidity
     and pressure. Formula taken from:
     https://www.weather.gov/epz/wxcalc_wetbulb (Brice and Hall, 2003)
 
     Args:
-        temp (float) -- The temperature in Celsius
-        rh (float) -- The relative humidity in [0,1]
-        p (float) -- The pressure in hPa
-    
+        temp (float, numpy array) -- The temperature in Celsius
+        rh (float, numpy array) -- The relative humidity in [0,1]
+        z (float, numpy array) -- The altitude in metres
+
     Returns:
         float, numpy array: The wet bulb temperature in Celsius
     """
-    rh_s = rh + 1
-    tw = temp
+    shape = temp.shape
 
-    while rh_s >= rh:
-        tw = tw - 0.001
-        es = 6.112*exp(17.67*temp/(temp+243.5))
-        ew = 6.112*exp(17.67*tw/(tw+243.5))
-        e = ew - p*(temp-tw)*0.00066*(1+(0.00115*tw))
+    temp = temp.reshape(-1)
+    rh = rh.reshape(-1)
+    p = _get_p_from_z(z).reshape(-1)
 
-        rh_s = e / es
+    tw_out = []
 
-    return tw
+    for i in range(len(temp)):
+        rh_s = rh[i] + 1
+        tw = temp[i]
+
+        while rh_s >= rh[i]:
+            tw = tw - 0.001
+            es = 6.112*exp(17.67*temp[i]/(temp[i]+243.5))
+            ew = 6.112*exp(17.67*tw/(tw+243.5))
+            e = ew - p[i]*(temp[i]-tw)*0.00066*(1+(0.00115*tw))
+
+            rh_s = e / es * 100
+
+        tw_out.append(tw)
+
+    tw_out = array(tw_out)
+    tw_out = tw_out.reshape(shape)
+
+    return tw_out
+
+
+def _get_p_from_z(z):
+    """Gets pressure field from altitude field considering an OACI atmosphere.
+
+    Args:
+        z (float, numpy array): The altitude in metres
+
+    Returns:
+        p: The pressure field in hPa
+    """
+
+    p = 1013.25 * (1 - 0.0065 * z / (15 + 0.0065 * z + 273.15)) ** 5.257
+
+    return p
+
+
+def get_tw_sadeghi(tair, tdew, z):
+    '''Gets the wet bulb temperature from air temperature, dew point
+    temperature and pressure. Formula taken from:
+    https://journals.ametsoc.org/doi/pdf/10.1175/JTECH-D-12-00191.1
+
+    Results close to trhp2tw, but computationally efficient
+
+    Args:
+        tair (float, numpy array): The air temperature in Celsius
+        tdew (float, numpy array): The dew point temperature in Celsius
+        z (float, numpy array): The altitude in metres
+
+    Returns:
+        float, numpy array: The wet bulb temperature in Celsius
+    '''
+
+    p = _get_p_from_z(z) / 10
+    ea = 0.611*(10**(7.5*tdew/(237.3+tdew)))
+
+    psych_ct = 6.42e-4
+
+    lambda0 = 0.0014 * 2.71828**(0.027 * tair)
+    xi = -3*(10**-7)*tair**3 - (10**-5)*tair**2 + 2*(10**-5)*tair + (
+         4.44*(10**-2))
+    phi = xi + psych_ct*p
+    psi = 0.611 - psych_ct*p*(tair) - ea
+
+    return (-phi + (phi**2 - 4*lambda0*psi)**(0.5)) / (2*lambda0)
