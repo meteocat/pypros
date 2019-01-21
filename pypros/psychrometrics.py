@@ -79,9 +79,9 @@ def trhp2tw(temp, rh, z):
     https://www.weather.gov/epz/wxcalc_wetbulb (Brice and Hall, 2003)
 
     Args:
-        temp (float, numpy array) -- The temperature in Celsius
-        rh (float, numpy array) -- The relative humidity in [0,1]
-        z (float, numpy array) -- The altitude in metres
+        temp (float, numpy array): The temperature in Celsius
+        rh (float, numpy array): The relative humidity in [0,1]
+        z (float, numpy array): The altitude in metres
 
     Returns:
         float, numpy array: The wet bulb temperature in Celsius

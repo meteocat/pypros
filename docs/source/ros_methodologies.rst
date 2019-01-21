@@ -11,7 +11,7 @@ There are different approaches to address this issue:
 
    - Static threshold
    - Linear transition
-   - Sigmoidal curves
+   - Koistinen and Saltikoff
 
 Static threshold
 ----------------
@@ -72,7 +72,7 @@ precipitation not categorized as snow is labelled as rain.
 
     Precipitation classification process of NMQ system. (Figure from Zhang et al. 2011)
 
-#TODO other static threshold
+#TODO implement this method
 
 Linear transition
 -----------------
@@ -110,13 +110,3 @@ where T corresponds to temperature in Celsius and RH to relative humidity in %.
 If p(snow) obtained values are below 0.33 precipitation is in form of rain, 
 if they are between 0.33 and 0.66 in form of sleet and classified as snow
 if they are above 0.66.
-
-Sigmoidal curves
-----------------
-
-#TODO
-
-Ding S-shaped curve (DingS)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-#TODO
