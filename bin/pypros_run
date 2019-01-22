@@ -1,0 +1,54 @@
+#!/usr/bin/env python
+'''Creates a GeoTIFF file with the surface precipitation type using
+the methodology chosen by the user.
+'''
+import argparse
+import json
+from pypros.pros import PyPros
+
+
+def pypros_run(config_file, out_file):
+    '''Runs the pypros program, by selecting and checking the configuration
+
+    Args:
+        config_file (str): The configuration file path
+        out_file (str): The resultant GeoTIFF file name
+    '''
+    with open(config_file) as f_p:
+        config = json.load(f_p)
+
+        try:
+            variables_file = config['variables_file']
+            method = config['method']
+            threshold = config['threshold']
+            data_format = config['data_format']
+            out_path = config['out_path']
+            refl_masked = config['refl_masked']
+        except KeyError as err:
+            raise ValueError("The configuration file has some " +
+                             "missing key: {}".format(err))
+
+        inst = PyPros(variables_file, method, threshold, data_format)
+
+        inst.save_file(inst.result, out_path + '/' + out_file + '.tif')
+
+        if refl_masked == "True":
+            inst.save_file(inst.refl_mask(), out_path + '/' + out_file +
+                           '_masked.tif')
+
+
+if __name__ == '__main__':
+    PARSER = argparse.ArgumentParser(description='Creates a GeoTIFF file ' +
+                                     'with the surface precipitation type ' +
+                                     'using the methodology chosen by the ' +
+                                     'user.')
+    PARSER.add_argument('config_file', type=str,
+                        help='The configuration file')
+    PARSER.add_argument('out_file', type=str,
+                        help='The output file path')
+    ARGS = PARSER.parse_args()
+
+    try:
+        pypros_run(ARGS.config_file, ARGS.out_file)
+    except Exception as err:
+        print(err)
