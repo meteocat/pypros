@@ -35,6 +35,10 @@ def pypros_run(tair, tdew, config_file, out_file, dem=None, refl=None):
             raise ValueError("The configuration file has some " +
                              "missing key: {}".format(err))
 
+        if len(variables_file) != len(data_format['vars_files']):
+            raise ValueError("The 'vars_file' key from data_format " +
+                             "argument is not properly set.")
+
         inst = PyPros(variables_file, method, threshold, data_format)
 
         inst.save_file(inst.result, out_file + '.tif')
