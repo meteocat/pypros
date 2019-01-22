@@ -37,7 +37,7 @@ path for all of them:
 Now, we’ll define those parameters that PyPros class uses and are the
 same whether the methodology changes or not. These parameters are:
 ``variables_files`` and ``data_format``. For more information on this
-class, see `PyPros Class <#aa>`__ notebook.
+class, see `PyPros Class <pypros_class.html>`__ notebook.
 
 .. code:: ipython3
 
