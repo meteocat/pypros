@@ -1,0 +1,73 @@
+#!/usr/bin/env python
+'''Creates a GeoTIFF file with the surface precipitation type using
+the methodology chosen by the user.
+'''
+import argparse
+import json
+from pypros.pros import PyPros
+
+
+def pypros_run(tair, tdew, config_file, out_file, dem=None, refl=None):
+    '''Runs the pypros program, by selecting and checking the configuration
+
+    Args:
+        tair (str): The air temperature field file path
+        tdew (str): The dew point temperature field file path
+        dem (str): The Digital Elevation Model file path. Default to None
+        refl (str): The radar reflectivity field file path. Default to None
+        config_file (str): The configuration file path
+        out_file (str): The resultant GeoTIFF file path
+    '''
+    with open(config_file) as f_p:
+        config = json.load(f_p)
+
+        try:
+            method = config['method']
+            threshold = config['threshold']
+            data_format = config['data_format']
+            refl_masked = config['refl_masked']
+            variables_file = [tair, tdew]
+            if dem is not None:
+                variables_file.append(dem)
+            if refl is not None:
+                variables_file.append(refl)
+        except KeyError as err:
+            raise ValueError("The configuration file has some " +
+                             "missing key: {}".format(err))
+
+        if len(variables_file) != len(data_format['vars_files']):
+            raise ValueError("The 'vars_file' key from data_format " +
+                             "argument is not properly set.")
+
+        inst = PyPros(variables_file, method, threshold, data_format)
+
+        inst.save_file(inst.result, out_file + '.tif')
+
+        if refl_masked == "True":
+            inst.save_file(inst.refl_mask(), out_file + '_masked.tif')
+
+
+if __name__ == '__main__':
+    PARSER = argparse.ArgumentParser(description='Creates a GeoTIFF file ' +
+                                     'with the surface precipitation type ' +
+                                     'using the methodology chosen by the ' +
+                                     'user.')
+    PARSER.add_argument('tair', type=str,
+                        help='The air temperature field')
+    PARSER.add_argument('tdew', type=str,
+                        help='The dew point temperature field')
+    PARSER.add_argument('--dem', type=str, default=None,
+                        help='The Digital Elevation Model')
+    PARSER.add_argument('--refl', type=str, default=None,
+                        help='The radar reflectivity field')
+    PARSER.add_argument('config_file', type=str,
+                        help='The configuration file')
+    PARSER.add_argument('out_file', type=str,
+                        help='The output file path')
+    ARGS = PARSER.parse_args()
+
+    try:
+        pypros_run(ARGS.tair, ARGS.tdew, ARGS.config_file, ARGS.out_file,
+                   ARGS.dem, ARGS.refl)
+    except Exception as err:
+        print(err)

@@ -192,6 +192,17 @@ class TestCalculateRos(unittest.TestCase):
         for i in range(1, 3):
             self.assertEqual(pros_masked[2][i], 10 + i)
 
+    def test_refl_mask_wrong(self):
+        variables_file = ['/tmp/tair.tif', '/tmp/tdew.tif']
+        data_format = {'vars_files': ['tair', 'tdew']}
+        
+        with self.assertRaises(ValueError) as cm:
+            inst = PyPros(variables_file, 'static_ta', 1.5,
+                          data_format)
+            inst.refl_mask()
+        self.assertEqual('Radar reflectivity field is not supplied.',
+                         str(cm.exception))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -203,7 +203,11 @@ class PyPros:
                   'Reflectivity field is not supplied.')
             raise
         '''
-        refl = self.variables[self.data_format['vars_files'].index('refl')]
+        try:
+            refl = self.variables[self.data_format['vars_files'].index('refl')]
+        except ValueError:
+            raise ValueError('Radar reflectivity field is not supplied.')
+        
         refl_bins = np.array([1, 5, 10, 15, 25])
         refl_class = np.digitize(refl, refl_bins)
 
