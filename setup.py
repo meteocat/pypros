@@ -2,14 +2,15 @@ import setuptools
 
 
 setuptools.setup(
-    name="pyRASP",
+    name="pyPROS",
     version="0.0.1",
-    description="pyRASP: Probability of rain or snow calculation",
+    description="pyPROS: Probability of rain or snow calculation",
     long_description=open('README.md').read(),
     long_description_content_type="text/markdown",
     url="https://github.com/pypa/sampleproject",
     packages=setuptools.find_packages(),
     install_requires=['numpy'],
+    scripts=['bin/pypros_run'],
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Science/Research',
