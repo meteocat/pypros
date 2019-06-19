@@ -10,7 +10,7 @@ format depending on the rain or snow methodology.
 
 First of all, we’ll import PyPros class.
 
-.. code:: ipython3
+.. code:: python3
 
     import os
     os.chdir('../../')
@@ -44,7 +44,7 @@ present.
 First, we’ll define the paths to each field and we’ll set
 ``variables_file`` with all of them.
 
-.. code:: ipython3
+.. code:: python3
 
     tair_file = './docs/notebooks/data/INT_TAIR_20170325_0030.tif'
     tdew_file = './docs/notebooks/data/INT_TDEW_20170325_0030.tif'
@@ -85,7 +85,7 @@ set, it assumes the default one.
 Now, as an example, we’ll define wet bulb temperature static threshold
 as the method to use and set threshold to 1.3\ :math:`^{\circ}`\ C.
 
-.. code:: ipython3
+.. code:: python3
 
     method = 'static_tw'
     threshold = 1.3
@@ -112,14 +112,14 @@ the variables are the following ones:
 Then, we’ll set ``data_format`` parameter following the
 ``variables_files`` order:
 
-.. code:: ipython3
+.. code:: python3
 
     data_format = {'vars_files': ['tair', 'tdew', 'dem', 'refl']}
 
 Now we’re ready to call PyPros class and obtain a surface precipitation type field.
                                                                                    
 
-.. code:: ipython3
+.. code:: python3
 
     static_tw = PyPros(variables_files, method, threshold, data_format)
 
@@ -129,14 +129,14 @@ raster file.
 
 To obtain the result, we must get the ``result`` attribute of the class.
 
-.. code:: ipython3
+.. code:: python3
 
     static_tw_field = static_tw.result
 
 And if we want to apply the reflectivity mask, we have to call
 ``refl_mask`` function from the PyPros class.
 
-.. code:: ipython3
+.. code:: python3
 
     static_tw_masked = static_tw.refl_mask()
 
@@ -145,14 +145,14 @@ Now, we’ve obtained two fields that we can save in raster files using
 parameters: the field matrix we want to save and the file path
 destination.
 
-.. code:: ipython3
+.. code:: python3
 
     static_tw.save_result(static_tw_field, './docs/notebooks/output/static_tw.tif')
     static_tw.save_file(static_tw_masked, './docs/notebooks/output/static_tw_masked.tif')
 
 We can have a look to ``static_tw`` result by plotting it with imshow:
 
-.. code:: ipython3
+.. code:: python3
 
     import matplotlib.pyplot as plt
     

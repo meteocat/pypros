@@ -1,0 +1,21 @@
+package:
+  name: 'pypros'
+  version: "{{ environ.get('GIT_DESCRIBE_TAG', 'default') }}"
+
+source: 
+  git_url: https://github.com/meteocat/pypros.git
+  git_branch: master
+
+requirements:
+  build:
+    - python
+    - numpy >=1.15.2
+  run:
+    - python
+    - numpy >=1.15.2
+
+about:
+  home: https://github.com/meteocat/pypros
+  license: MIT
+  license_family: MIT
+  summary: The PyPROS library applied several algorithms to calculate the probability that the precipitation will be in rain, sleet or snow, given the temperature, dew point, reflectivity or other magnitudes.

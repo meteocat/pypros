@@ -66,6 +66,8 @@
         "-p",
         "*_test.py"
     ],
+    "python.coveragepy.file": ".coverage",
+    "python.coverageView.highlight": "#000000",
     "python.unitTest.pyTestEnabled": false,
     "python.unitTest.nosetestsEnabled": false,
     "python.unitTest.unittestEnabled": true,
@@ -75,4 +77,14 @@
     "python.linting.pylintArgs": [
         "--extension-pkg-whitelist=numpy,scipy"
     ],
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        "./test",
+        "-p",
+        "*_test.py"
+    ],
+    "python.testing.pyTestEnabled": false,
+    "python.testing.nosetestsEnabled": false,
+    "python.testing.unittestEnabled": true,
 }

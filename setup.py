@@ -1,9 +1,16 @@
+import datetime
+import subprocess
+
 import setuptools
 
+release = subprocess.check_output(['git', 'describe', '--abbrev=0', '--tags']).decode('utf-8').strip()
+version = ".".join(release.split('.')[0:2])
+name = 'pypros'
+now = datetime.datetime.now()
 
 setuptools.setup(
-    name="pyPROS",
-    version="0.0.1",
+    name=name,
+    version=release,
     description="pyPROS: Probability of rain or snow calculation",
     long_description=open('README.md').read(),
     long_description_content_type="text/markdown",
@@ -19,4 +26,13 @@ setuptools.setup(
         'License :: OSI Approved :: BSD License',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6'],
+    command_options={
+        'build_sphinx': {
+            'project': ('setup.py', name),
+            'version': ('setup.py', version),
+            'release': ('setup.py', release),
+            'copyright': ('setup.py',
+                          str(now.year)+",Servei Meteorològic de Catalunya")
+            }
+        },
 )
