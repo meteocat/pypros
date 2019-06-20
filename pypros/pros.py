@@ -2,7 +2,8 @@
 For a point or numpy arrays
 '''
 import numpy as np
-from osgeo import gdal, osr
+import gdal
+import osr
 from pypros.psychrometrics import ttd2tw
 from pypros.psychrometrics import get_tw_sadeghi
 from pypros.ros_methods import calculate_koistinen_saltikoff
