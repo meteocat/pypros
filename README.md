@@ -1,4 +1,4 @@
-![PyPI](https://img.shields.io/pypi/v/pypros.svg)
+[![PyPI](https://img.shields.io/pypi/v/pypros.svg)](https://pypi.org/project/pypros/)
 [![Anaconda-Server Badge](https://anaconda.org/meteocat/pypros/badges/version.svg)](https://anaconda.org/meteocat/pypros)
 [![Documentation Status](https://readthedocs.org/projects/pypros/badge/?version=latest)](https://pypros.readthedocs.io/en/latest/?badge=latest)
 [![Build Status](https://travis-ci.org/meteocat/pypros.svg?branch=master)](https://travis-ci.org/meteocat/pypros)
