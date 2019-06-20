@@ -12,23 +12,21 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
-import sys
-import datetime
-
-sys.path.insert(0, os.path.abspath('../../'))
+# import os
+# import sys
+# sys.path.insert(0, os.path.abspath('.'))
 
 
 # -- Project information -----------------------------------------------------
-now = datetime.datetime.now()
+
 project = 'pyPROS'
-copyright = str(now.year)+', Servei Meteorològic de Catalunya'
+copyright = 'Servei Meteorològic de Catalunya'
 author = 'Servei Meteorològic de Catalunya'
 
 # The short X.Y version
 version = ''
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = ''
 
 
 # -- General configuration ---------------------------------------------------
