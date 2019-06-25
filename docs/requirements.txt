@@ -1,3 +1,2 @@
 numpy
-libgdal-dev
-gdal
+pygdal
