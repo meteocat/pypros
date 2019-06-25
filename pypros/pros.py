@@ -1,4 +1,4 @@
-'''Functions to calculate the probability of rain or snow.
+'''Functions to calculate the precipitation type.
 For a point or numpy arrays
 '''
 import numpy as np
@@ -163,7 +163,8 @@ class PyPros:
         d_s.GetRasterBand(1).WriteArray(field)
 
     def refl_mask(self):
-        """Calculates the probability of snow. The output classification is as follows:
+        """Calculates the precipitation type masked. The output classification
+        is as follows:
 
         rain
 
@@ -194,7 +195,7 @@ class PyPros:
             ValueError: Raised when the method is not valid (ks or tw)
 
         Returns:
-            float, numpy array: The probability of snow classification value
+            float, numpy array: The precipitation type classification value
         """
         '''
         try:
@@ -208,7 +209,7 @@ class PyPros:
             refl = self.variables[self.data_format['vars_files'].index('refl')]
         except ValueError:
             raise ValueError('Radar reflectivity field is not supplied.')
-        
+
         refl_bins = np.array([1, 5, 10, 15, 25])
         refl_class = np.digitize(refl, refl_bins)
 

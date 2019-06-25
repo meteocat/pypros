@@ -1,3 +1,5 @@
+"""Implements several rain or snow methodologies.
+"""
 from pypros.psychrometrics import td2hr
 from numpy import where
 
