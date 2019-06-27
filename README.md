@@ -1,6 +1,6 @@
 [![PyPI](https://img.shields.io/pypi/v/pypros.svg)](https://pypi.org/project/pypros/)
 [![Anaconda-Server Badge](https://anaconda.org/meteocat/pypros/badges/version.svg)](https://anaconda.org/meteocat/pypros)
-[![Documentation Status](https://readthedocs.org/projects/pypros/badge/?version=latest)](https://pypros.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/pypros/badge/?version=documentation)](https://pypros.readthedocs.io/en/documentation/?badge=documentation)
 [![Build Status](https://travis-ci.org/meteocat/pypros.svg?branch=master)](https://travis-ci.org/meteocat/pypros)
 
 [![Logo](https://github.com/meteocat/pypros/blob/master/docs/source/_static/logo_pros_small.png)](#)
@@ -20,7 +20,7 @@ To install pyPROS you can have a look at [pyPROS installation](https://pypros.re
 
 Use
 ===
-Different precipitation type discrimination strategies are implemented in this package. More information in [pyPROS documentation](https://pypros.readthedocs.io/en/latest/index.html)
+Different precipitation type discrimination strategies are implemented in this package. More information in [pyPROS documentation](https://pypros.readthedocs.io/en/documentation/index.html)
 
 A set of examples were designed to explore the different possibilities of PROS.
 

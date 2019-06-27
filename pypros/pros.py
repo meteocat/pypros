@@ -190,7 +190,7 @@ class PyPros:
         - 25dbZ: 15
 
         Args:
-            refl (str): The output file path
+            refl (numpy.array): Array with reflectivity values
 
         Raises:
             IndexError: Raised if the types don't match in size ot type
