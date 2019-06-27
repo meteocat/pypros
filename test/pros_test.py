@@ -10,11 +10,10 @@ from pypros.pros import PyPros
 class TestCalculateRos(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.data_format = {'vars_files': ['tair', 'tdew', 'dem', 'refl']}
+        cls.data_format = {'vars_files': ['tair', 'tdew', 'dem']}
         cls.variables_file = ['/tmp/tair.tif',
                               '/tmp/tdew.tif',
-                              '/tmp/dem.tif',
-                              '/tmp/refl.tif']
+                              '/tmp/dem.tif']
         cls.method = 'ks'
         cls.threshold = None
 
@@ -22,9 +21,7 @@ class TestCalculateRos(unittest.TestCase):
         tair = numpy.ones(size)
         tdew = numpy.ones(size)
         dem = numpy.ones(size)
-        refl = numpy.ones(size)
 
-        refl_values = [0.2, 2, 6, 12, 16, 26]
         for i in range(3):
             tair[0][i] = 20
             tdew[0][i] = 20
@@ -35,11 +32,8 @@ class TestCalculateRos(unittest.TestCase):
             dem[0][i] = 0
             dem[1][i] = 1500
             dem[2][i] = 3000
-            refl[0][i] = refl_values[i]
-            refl[1][i] = refl_values[i]
-            refl[2][i] = refl_values[i]
 
-        fields = [tair, tdew, dem, refl]
+        fields = [tair, tdew, dem]
 
         for i in range(len(fields)):
             driver = gdal.GetDriverByName('GTiff')
@@ -147,7 +141,16 @@ class TestCalculateRos(unittest.TestCase):
 
         inst = PyPros(self.variables_file, 'ks', self.threshold,
                       self.data_format)
-        pros_masked = inst.refl_mask()
+
+        refl = numpy.ones((3, 3))
+
+        refl_values = [0.2, 2, 6, 12, 16, 26]
+        for i in range(3):
+            refl[0][i] = refl_values[i]
+            refl[1][i] = refl_values[i]
+            refl[2][i] = refl_values[i]
+
+        pros_masked = inst.refl_mask(refl)
 
         # rain
         for i in range(1, 3):
@@ -161,7 +164,7 @@ class TestCalculateRos(unittest.TestCase):
 
         inst = PyPros(self.variables_file, 'static_tw', 1.5,
                       self.data_format)
-        pros_masked = inst.refl_mask()
+        pros_masked = inst.refl_mask(refl)
 
         # rain
         for i in range(1, 3):
@@ -172,7 +175,7 @@ class TestCalculateRos(unittest.TestCase):
 
         inst = PyPros(self.variables_file, 'static_ta', 1.0,
                       self.data_format)
-        pros_masked = inst.refl_mask()
+        pros_masked = inst.refl_mask(refl)
 
         # rain
         for i in range(1, 3):
@@ -183,7 +186,7 @@ class TestCalculateRos(unittest.TestCase):
 
         inst = PyPros(self.variables_file, 'linear_tr', [0, 3],
                       self.data_format)
-        pros_masked = inst.refl_mask()
+        pros_masked = inst.refl_mask(refl)
 
         # rain
         for i in range(1, 3):
@@ -198,12 +201,14 @@ class TestCalculateRos(unittest.TestCase):
     def test_refl_mask_wrong(self):
         variables_file = ['/tmp/tair.tif', '/tmp/tdew.tif']
         data_format = {'vars_files': ['tair', 'tdew']}
-        
-        with self.assertRaises(ValueError) as cm:
+
+        refl = numpy.ones((1, 1))
+
+        with self.assertRaises(IndexError) as cm:
             inst = PyPros(variables_file, 'static_ta', 1.5,
                           data_format)
-            inst.refl_mask()
-        self.assertEqual('Radar reflectivity field is not supplied.',
+            inst.refl_mask(refl)
+        self.assertEqual('Variables fields must have the same shape.',
                          str(cm.exception))
 
 

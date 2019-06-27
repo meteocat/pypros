@@ -23,7 +23,7 @@ class PyPros:
             variables_file (str, list): The file paths containing air
                                         temperature, dew point
                                         temperature and (digital elevation
-                                        model, reflectivity) fields.
+                                        model) fields.
 
             method (str): The precipitation type discrimination
                           method to use. Defaults to ks.
@@ -48,14 +48,13 @@ class PyPros:
                                           Defaults to:
                                           {'vars_files': ['tair',
                                                           'tdew',
-                                                          'dem',
-                                                          'refl']}
+                                                          'dem']}
 
         Raises:
             ValueError: Raised when the method is not valid
         """
         if data_format is None:
-            self.data_format = {'vars_files': ['tair', 'tdew', 'dem', 'refl']}
+            self.data_format = {'vars_files': ['tair', 'tdew', 'dem']}
         else:
             self.data_format = data_format
 
@@ -162,7 +161,7 @@ class PyPros:
 
         d_s.GetRasterBand(1).WriteArray(field)
 
-    def refl_mask(self):
+    def refl_mask(self, refl):
         """Calculates the precipitation type masked. The output classification
         is as follows:
 
@@ -190,25 +189,18 @@ class PyPros:
         - 15dBZ: 14
         - 25dbZ: 15
 
+        Args:
+            refl (str): The output file path
+
         Raises:
             IndexError: Raised if the types don't match in size ot type
-            ValueError: Raised when the method is not valid (ks or tw)
 
         Returns:
             float, numpy array: The precipitation type classification value
         """
-        '''
-        try:
-        refl = self.variables[self.data_format['vars_files'].index('refl')]
-        except ValueError:
-            print('The data format may not be properly defined or ' +
-                  'Reflectivity field is not supplied.')
-            raise
-        '''
-        try:
-            refl = self.variables[self.data_format['vars_files'].index('refl')]
-        except ValueError:
-            raise ValueError('Radar reflectivity field is not supplied.')
+        if self.result.shape != refl.shape:
+            raise IndexError('Variables fields must have the' +
+                             ' same shape.')
 
         refl_bins = np.array([1, 5, 10, 15, 25])
         refl_class = np.digitize(refl, refl_bins)

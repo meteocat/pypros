@@ -16,10 +16,11 @@ Given an air temperature and dew point temperature fields a precipitation type f
 Installation
 ============
 
-To install pyPROS you can have a look at [pyPROS installation](https://pypros.readthedocs.io/en/latest/installation.html) documentation.
+To install pyPROS you can have a look at [pyPROS installation](https://pypros.readthedocs.io/en/documentation/installation.html) documentation.
 
 Use
 ===
+Different precipitation type discrimination strategies are implemented in this package. More information in [pyPROS documentation](https://pypros.readthedocs.io/en/latest/index.html)
 
 A set of examples were designed to explore the different possibilities of PROS.
 
