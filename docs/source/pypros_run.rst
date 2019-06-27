@@ -1,6 +1,6 @@
 
-pypros_run
-==========
+pypros_run script
+=================
 
 If you want to run PyPros form terminal directly, you can use
 ``pypros_run`` script. Now we’ll how it must be called.
@@ -21,8 +21,6 @@ optional. The arguments and their order are the following ones:
 +-------+-------------+---------------------------------------+-----------+
 | 5     | dem         | Digital Elevation Model file path     | ☐         |
 +-------+-------------+---------------------------------------+-----------+
-| 6     | refl        | Radar reflectivity field file path    | ☐         |
-+-------+-------------+---------------------------------------+-----------+
 
 The configuration file is a .json including the following parameters:
 
@@ -36,21 +34,21 @@ The configuration file is a .json including the following parameters:
        }
 
 For more information about the pypros_run script configuration
-parameters, see `PyPros Class <pypros_class.html>`__.
+parameters, see `PyPros Class <pypros_class.ipynb>`__.
 
 In order to execute the script you must have pyPROS package installed,
 see Documentation.
 
 A configuration file and sample fields for air temperature, dew point
 temperature, digital elevation model and radar reflectivity are
-available in ``./docs/notebooks/data/`` directory. We’ll introduce two
-examples of how ``pypros_run`` script is run.
+available in ``../sample-data/`` directory. We’ll introduce two examples
+of how ``pypros_run`` script is run.
 
 Air temperature static threshold
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The configuration file must look like the following one. We’ll set the
-threshold to 1.0 :math:^{`\circ`} C.
+threshold to 1.0\ :math:`^{\circ}`\ C.
 
 .. code:: json
 
@@ -72,20 +70,20 @@ Wet bulb temperature threshold
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The configuration file should include the following parameters. We’ll
-set the threshold to 1.5 :math:^{`\circ`} C.
+set the threshold to 1.5\ :math:`^{\circ}`\ C.
 
 .. code:: json
 
        {
         "method": "static_tw",
         "threshold": 1.5,
-        "data_format": {"vars_files": ["tair", "tdew", "dem", "refl"]},
+        "data_format": {"vars_files": ["tair", "tdew", "dem"]},
         "refl_masked": "True"
        }
 
 Since we set ``refl_masked`` to ``True`` we have to include the radar
-reflectivity field in ``data_format`` and as an script argument. In
-addition, we have also included ``dem`` in order to take into account
+reflectivity field in the configuration file and as an script argument.
+In addition, we have also included ``dem`` in order to take into account
 altitude when calculating wet bulb temperature. We would execute the
 script this way:
 

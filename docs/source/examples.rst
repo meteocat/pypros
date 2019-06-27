@@ -8,5 +8,7 @@ This section contains explanations and examples of the PyPros class applications
    :caption: Jupyter Notebooks:
    
    pypros_class
-   where-is-it-snowing
    pypros_run
+   static-threshold
+   linear-transition
+   koistinen-saltikoff
