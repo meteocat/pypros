@@ -6,7 +6,7 @@
 [![Logo](https://github.com/meteocat/pypros/blob/master/docs/source/_static/logo_pros_small.png)](#)
 
 
-PyPROS: PRecipitation type calculation: Rain or Snow
+PyPROS, precipitation type calculation: rain or snow
 ===================================
 
 The PyPROS package applies several algorithms to estimate the precipitation type and discriminate it among rain, sleet and snow. 
@@ -16,7 +16,7 @@ Given an air temperature and dew point temperature fields a precipitation type f
 Installation
 ============
 
-To install pyPROS you can have a look at [pyPROS installation](https://pymica.readthedocs.io/en/latest/installation.html) documentation.
+To install pyPROS you can have a look at [pyPROS installation](https://pypros.readthedocs.io/en/latest/installation.html) documentation.
 
 Use
 ===
