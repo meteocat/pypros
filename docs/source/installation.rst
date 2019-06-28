@@ -15,11 +15,9 @@ pip
 
 :code:`pip install -r requirements.txt`
 
-:code:`pip install pymica`
+:code:`pip install pypros`
 
 Anaconda
 --------
 
-You can first install the dependencies by running:
-
-:code:`conda env create -f environment.yml`
+:code:`conda install -c meteocat pypros`
