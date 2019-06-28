@@ -1,5 +1,5 @@
 '''
-Psychrometrics calculations
+Psychrometric calculations
 '''
 from numpy import power
 from numpy import arctan

@@ -3,7 +3,8 @@ import subprocess
 
 import setuptools
 
-release = subprocess.check_output(['git', 'describe', '--abbrev=0', '--tags']).decode('utf-8').strip()
+release = (subprocess.check_output(['git', 'describe', '--abbrev=0',
+                                    '--tags']).decode('utf-8').strip())
 version = ".".join(release.split('.')[0:2])
 name = 'pypros'
 now = datetime.datetime.now()
@@ -11,7 +12,7 @@ now = datetime.datetime.now()
 setuptools.setup(
     name=name,
     version=release,
-    description="pyPROS: Probability of rain or snow calculation",
+    description="pyPROS: Precipitation type calculation, rain or snow",
     long_description=open('README.md').read(),
     long_description_content_type="text/markdown",
     url="https://github.com/pypa/sampleproject",

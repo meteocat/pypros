@@ -29,8 +29,8 @@ def pypros_run(tair, tdew, config_file, out_file, dem=None, refl=None):
             variables_file = [tair, tdew]
             if dem is not None:
                 variables_file.append(dem)
-            if refl is not None:
-                variables_file.append(refl)
+            # if refl is not None:
+            #    variables_file.append(refl)
         except KeyError as err:
             raise ValueError("The configuration file has some " +
                              "missing key: {}".format(err))
@@ -44,7 +44,12 @@ def pypros_run(tair, tdew, config_file, out_file, dem=None, refl=None):
         inst.save_file(inst.result, out_file + '.tif')
 
         if refl_masked == "True":
-            inst.save_file(inst.refl_mask(), out_file + '_masked.tif')
+            if refl is None:
+                raise ValueError("The refl_masked parameter was set to " +
+                                 "True, but no reflectivity field is " +
+                                 "supplied")
+            else:
+                inst.save_file(inst.refl_mask(refl), out_file + '_masked.tif')
 
 
 if __name__ == '__main__':
