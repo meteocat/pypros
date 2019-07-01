@@ -2,6 +2,8 @@
 [![Anaconda-Server Badge](https://anaconda.org/meteocat/pypros/badges/version.svg)](https://anaconda.org/meteocat/pypros)
 [![Documentation Status](https://readthedocs.org/projects/pypros/badge/?version=latest)](https://pypros.readthedocs.io/en/latest/?badge=latest)
 [![Build Status](https://travis-ci.org/meteocat/pypros.svg?branch=master)](https://travis-ci.org/meteocat/pypros)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/meteocat/pypros-examples/master)
+
 
 [![Logo](https://github.com/meteocat/pypros/blob/master/docs/source/_static/logo_pros_small.png)](#)
 
