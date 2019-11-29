@@ -1,6 +1,7 @@
 import unittest
 from pypros.ros_methods import calculate_koistinen_saltikoff
-from pypros.ros_methods import calculate_static_threshold
+from pypros.ros_methods import calculate_single_threshold
+from pypros.ros_methods import calculate_dual_threshold
 from pypros.ros_methods import calculate_linear_transition
 from numpy import ones
 
@@ -24,18 +25,37 @@ class TestCalculateRosMethods(unittest.TestCase):
         for i in range(temp.shape[0]):
             self.assertEqual(result[i][0], ks_rh(temp[i][0], tempd[i][0]))
 
-    def test_calculate_static_threshold(self):
+    def test_calculate_single_threshold(self):
         field = ones((3, 1))
 
         field[0][0] = 0.6
         field[1][0] = 2.3
         field[2][0] = 1.5
 
-        result = calculate_static_threshold(field, 1.5)
+        result = calculate_single_threshold(field, 1.5)
 
         self.assertEqual(result[0][0], 1)
         self.assertEqual(result[1][0], 0)
         self.assertEqual(result[2][0], 1)
+
+    def test_calculate_dual_threshold(self):
+        field = ones((3, 1))
+
+        field[0][0] = 0.6
+        field[1][0] = 2.3
+        field[2][0] = 1.6
+
+        result = calculate_dual_threshold(field, 1.5, 1.7)
+
+        self.assertEqual(result[0][0], 1)
+        self.assertEqual(result[1][0], 0)
+        self.assertEqual(result[2][0], 0.5)
+
+        with self.assertRaises(ValueError) as cm:
+            calculate_linear_transition(field, 2, 0)
+        self.assertEqual(
+            "Incorrect thresholds, th_s value must be smaller than th_r",
+            str(cm.exception))
 
     def test_calculate_linear_transition(self):
         field = ones((5, 1))

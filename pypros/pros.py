@@ -7,7 +7,7 @@ import osr
 from pypros.psychrometrics import ttd2tw
 from pypros.psychrometrics import get_tw_sadeghi
 from pypros.ros_methods import calculate_koistinen_saltikoff
-from pypros.ros_methods import calculate_static_threshold
+from pypros.ros_methods import calculate_single_threshold
 from pypros.ros_methods import calculate_linear_transition
 
 
@@ -108,9 +108,9 @@ class PyPros:
                 twet = ttd2tw(tair, tdew)
             else:
                 twet = get_tw_sadeghi(tair, tdew, dem)
-            self.result = calculate_static_threshold(twet, self.threshold)
+            self.result = calculate_single_threshold(twet, self.threshold)
         elif method == 'static_ta':
-            self.result = calculate_static_threshold(tair, self.threshold)
+            self.result = calculate_single_threshold(tair, self.threshold)
         elif method == 'linear_tr':
             self.result = calculate_linear_transition(tair, self.threshold[0],
                                                       self.threshold[1])
