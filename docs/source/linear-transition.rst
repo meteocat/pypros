@@ -26,7 +26,7 @@ considering the linear transition methodology.
 
 First of all, we’ll import the required libraries.
 
-.. code:: ipython3
+.. code:: python
 
     from pypros.pros import PyPros
 
@@ -38,7 +38,7 @@ elevation model (DEM) and reflectivity fields.
 Those fields can be found in notebooks/data directory and we’ll keep the
 path for all of them:
 
-.. code:: ipython3
+.. code:: python
 
     tair_file = '../sample-data/INT_TAIR_20170325_0030.tif'
     tdew_file = '../sample-data/INT_TDEW_20170325_0030.tif'
@@ -49,7 +49,7 @@ same whether the methodology changes or not. These parameters are:
 ``variables_files`` and ``data_format``. For more information on this
 class, see `PyPros Class <pypros_class.ipynb>`__ notebook.
 
-.. code:: ipython3
+.. code:: python
 
     variables_files = [tair_file,
                        tdew_file,
@@ -63,21 +63,21 @@ Since we want to apply an air temperature linear transition, first we’ll
 define ``method`` PyPros parameter as ``'linear_tr'`` and then we’ll set
 the ``threshold`` parameter to [0, 3] (:math:`^{\circ}`\ C).
 
-.. code:: ipython3
+.. code:: python
 
     method = 'linear_tr'
     threshold = [0, 3]
 
 Now, we’re ready to call PyPros class!
 
-.. code:: ipython3
+.. code:: python
 
     linear_tr = PyPros(variables_files, method, threshold, data_format)
 
 We can get a quicklook of the obtained field using ``plot_pros``
 function:
 
-.. code:: ipython3
+.. code:: python
 
     import matplotlib.pyplot as plt
     plt.imshow(linear_tr.result)
@@ -86,7 +86,7 @@ function:
 In addition, we can save the precipitation type field in a raster file
 using ``save_file`` function:
 
-.. code:: ipython3
+.. code:: python
 
     linear_tr.save_file(linear_tr.result, '../sample-data/output/linear_tr.tif')
 
@@ -95,18 +95,18 @@ If we have a reflectivity field, we can also apply it as a mask by using
 to read first the reflectivity field. For this purpose we need to import
 gdal.
 
-.. code:: ipython3
+.. code:: python
 
     from osgeo import gdal
-    
+
     refl_file = '../sample-data/CAPPI_XRAD_20170325_0030.tif'
     refl_array = gdal.Open(refl_file).ReadAsArray()
 
 Once we’ve read the ``refl_field`` we can call the ``refl_mask``
 function.
 
-.. code:: ipython3
+.. code:: python
 
     linear_tr_masked = linear_tr.refl_mask(refl_array)
-    
+
     linear_tr.save_file(linear_tr_masked, '../sample-data/output/linear_tr_masked.tif')

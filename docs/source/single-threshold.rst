@@ -1,5 +1,5 @@
 
-Static threshold
+Single threshold
 ================
 
 A single meteorological variable value is set as a threshold from which
@@ -9,17 +9,17 @@ otherwise as snow.
 
 If air temperature (:math:`T_{a}`) is chosen as meteorological variable:
 
-:math:`\begin{equation*}  
+:math:`\begin{equation*}
 T_{a} <= T_{a_{threshold}} \longrightarrow Snow \\
 T_{a} > T_{a_{threshold}} \longrightarrow Rain
 \end{equation*}`
 
 In the following example we’ll show how PyPROS classifies precipitation
-considering the static threshold methodology.
+considering the single threshold methodology.
 
 First of all, we’ll import the required libraries.
 
-.. code:: ipython3
+.. code:: python
 
     from pypros.pros import PyPros
 
@@ -31,7 +31,7 @@ elevation model (DEM) and reflectivity fields.
 Those fields can be found in notebooks/data directory and we’ll keep the
 path for all of them:
 
-.. code:: ipython3
+.. code:: python
 
     tair_file = '../sample-data/INT_TAIR_20170325_0030.tif'
     tdew_file = '../sample-data/INT_TDEW_20170325_0030.tif'
@@ -43,7 +43,7 @@ same whether the methodology changes or not. These parameters are:
 ``variables_files`` and ``data_format``. For more information on this
 class, see `PyPros Class <pypros_class.ipynb>`__ notebook.
 
-.. code:: ipython3
+.. code:: python
 
     variables_files = [tair_file,
                        tdew_file,
@@ -53,109 +53,109 @@ class, see `PyPros Class <pypros_class.ipynb>`__ notebook.
 Air temperature threshold
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Since we want to apply a static air temperature threshold, first we’ll
-define ``method`` PyPros parameter as ``'static_ta'`` and then we’ll set
+Since we want to apply a single air temperature threshold, first we’ll
+define ``method`` PyPros parameter as ``'single_ta'`` and then we’ll set
 the ``threshold`` parameter to 1.0\ :math:`^{\circ}`\ C.
 
-.. code:: ipython3
+.. code:: python
 
-    method = 'static_ta'
+    method = 'single_ta'
     threshold = 1.0
 
 Now, we’re ready to call PyPros class!
 
-.. code:: ipython3
+.. code:: python
 
-    static_ta = PyPros(variables_files, method, threshold, data_format)
+    single_ta = PyPros(variables_files, method, threshold, data_format)
 
 We can get a quicklook of the obtained field using ``plot_pros``
 function:
 
-.. code:: ipython3
+.. code:: python
 
     import matplotlib.pyplot as plt
-    plt.imshow(static_ta.result)
+    plt.imshow(single_ta.result)
     plt.show()
 
 In addition, we can save the precipitation type field in a raster file
 using ``save_file`` function:
 
-.. code:: ipython3
+.. code:: python
 
-    static_ta.save_file(static_ta.result, '../sample-data/output/static_ta.tif')
+    single_ta.save_file(single_ta.result, '../sample-data/output/single_ta.tif')
 
 If we have a reflectivity field, we can also apply it as a mask by using
 ``refl_mask`` function and save it as a raster file. However, we’ll have
 to read first the reflectivity field. For this purpose we need to import
 gdal.
 
-.. code:: ipython3
+.. code:: python
 
     from osgeo import gdal
-    
+
     refl_file = '../sample-data/CAPPI_XRAD_20170325_0030.tif'
     refl_array = gdal.Open(refl_file).ReadAsArray()
 
 Once we’ve read the ``refl_field`` we can call the ``refl_mask``
 function.
 
-.. code:: ipython3
+.. code:: python
 
-    static_ta_masked = static_ta.refl_mask()
-    
-    static_ta.save_file(static_ta_masked, '../sample-data/output/static_ta_masked.tif')
+    single_ta_masked = single_ta.refl_mask()
+
+    single_ta.save_file(single_ta_masked, '../sample-data/output/single_ta_masked.tif')
 
 Wet bulb temperature threshold
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-We want to apply a static wet bulb temperature threshold, so first we’ll
-define ``method`` PyPros parameter as ``'static_tw'`` and then we’ll set
+We want to apply a single wet bulb temperature threshold, so first we’ll
+define ``method`` PyPros parameter as ``'single_tw'`` and then we’ll set
 the ``threshold`` parameter to 1.5\ :math:`^{\circ}`\ C.
 
-.. code:: ipython3
+.. code:: python
 
-    method = 'static_tw'
+    method = 'single_tw'
     threshold = 1.5
 
 Now, we’re ready to call PyPros class!
 
-.. code:: ipython3
+.. code:: python
 
-    static_tw = PyPros(variables_files, method, threshold, data_format)
+    single_tw = PyPros(variables_files, method, threshold, data_format)
 
 We can get a quicklook of the obtained field using ``plot_pros``
 function:
 
-.. code:: ipython3
+.. code:: python
 
     import matplotlib.pyplot as plt
-    plt.imshow(static_tw.result)
+    plt.imshow(single_tw.result)
     plt.show()
 
 In addition, we can save the precipitation type field in a raster file
 using ``save_file`` function:
 
-.. code:: ipython3
+.. code:: python
 
-    static_tw.save_file(static_tw.result, '../sample-data/output/static_tw.tif')
+    single_tw.save_file(single_tw.result, '../sample-data/output/single_tw.tif')
 
 If we have a reflectivity field, we can also apply it as a mask by using
 ``refl_mask`` function and save it as a raster file. However, we’ll have
 to read first the reflectivity field. For this purpose we need to import
 gdal.
 
-.. code:: ipython3
+.. code:: python
 
     from osgeo import gdal
-    
+
     refl_file = '../sample-data/CAPPI_XRAD_20170325_0030.tif'
     refl_array = gdal.Open(refl_file).ReadAsArray()
 
 Once we’ve read the ``refl_file`` we can call the ``refl_mask``
 function.
 
-.. code:: ipython3
+.. code:: python
 
-    static_tw_masked = static_tw.refl_mask(refl_array)
-    
-    static_tw.save_file(static_tw_masked, '../sample-data/output/static_tw_masked.tif')
+    single_tw_masked = single_tw.refl_mask(refl_array)
+
+    single_tw.save_file(single_tw_masked, '../sample-data/output/single_tw_masked.tif')

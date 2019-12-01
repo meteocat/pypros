@@ -24,7 +24,7 @@ considering the Koistinen-Saltikoff methodology.
 
 First of all, we’ll import the required libraries.
 
-.. code:: ipython3
+.. code:: python
 
     from pypros.pros import PyPros
 
@@ -36,7 +36,7 @@ elevation model (DEM) and reflectivity fields.
 Those fields can be found in notebooks/data directory and we’ll keep the
 path for all of them:
 
-.. code:: ipython3
+.. code:: python
 
     tair_file = '../sample-data/INT_TAIR_20170325_0030.tif'
     tdew_file = '../sample-data/INT_TDEW_20170325_0030.tif'
@@ -47,7 +47,7 @@ same whether the methodology changes or not. These parameters are:
 ``variables_files`` and ``data_format``. For more information on this
 class, see `PyPros Class <pypros_class.ipynb>`__ notebook.
 
-.. code:: ipython3
+.. code:: python
 
     variables_files = [tair_file,
                        tdew_file,
@@ -58,21 +58,21 @@ Since we want to apply the Koistinen-Saltikoff methodology, first we’ll
 define ``method`` PyPros parameter as ``'ks'`` and then we’ll set the
 ``threshold`` parameter to ``None``.
 
-.. code:: ipython3
+.. code:: python
 
     method = 'ks'
     threshold = None
 
 Now, we’re ready to call PyPros class!
 
-.. code:: ipython3
+.. code:: python
 
     ks = PyPros(variables_files, method, threshold, data_format)
 
 We can get a quicklook of the obtained field using ``plot_pros``
 function:
 
-.. code:: ipython3
+.. code:: python
 
     import matplotlib.pyplot as plt
     plt.imshow(ks.result)
@@ -81,7 +81,7 @@ function:
 In addition, we can save the precipitation type field in a raster file
 using ``save_file`` function:
 
-.. code:: ipython3
+.. code:: python
 
     ks.save_file(ks.result, '../sample-data/output/ks.tif')
 
@@ -90,18 +90,18 @@ If we have a reflectivity field, we can also apply it as a mask by using
 to read first the reflectivity field. For this purpose we need to import
 gdal.
 
-.. code:: ipython3
+.. code:: python
 
     from osgeo import gdal
-    
+
     refl_file = '../sample-data/CAPPI_XRAD_20170325_0030.tif'
     refl_array = gdal.Open(refl_file).ReadAsArray()
 
 Once we’ve read the ``refl_field`` we can call the ``refl_mask``
 function.
 
-.. code:: ipython3
+.. code:: python
 
     ks_masked = ks.refl_mask(refl_array)
-    
+
     ks.save_file(ks_masked, '../sample-data/output/ks_masked.tif')
