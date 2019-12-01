@@ -9,6 +9,7 @@ from pypros.psychrometrics import get_tw_sadeghi
 from pypros.ros_methods import calculate_koistinen_saltikoff
 from pypros.ros_methods import calculate_single_threshold
 from pypros.ros_methods import calculate_linear_transition
+from pypros.ros_methods import calculate_dual_threshold
 
 
 class PyPros:
@@ -30,8 +31,11 @@ class PyPros:
 
                           Available:
                             - ks       : Koistinen and Saltikoff method
-                            - static_tw: Wet bulb temperature threshold
-                            - static_ta: Air temperature threshold
+                            - single_tw: A single wet bulb temperature
+                                         threshold
+                            - single_ta: A single air temperature threshold
+                            - dual_tw  : A dual wet bulb temperature thresholds
+                            - dual_ta  : A dual air temperature threshold
                             - linear_tr: Linear transition between rain
                                          and snow
 
@@ -71,11 +75,12 @@ class PyPros:
                 raise ValueError('Non valid method. Valid values are ks and ' +
                                  'static_tw, static_ta and linear_tr')
         else:
-            if method == 'static_ta' or method == 'static_tw':
+            if method == 'single_ta' or method == 'single_tw':
                 if not type(threshold) == float:
                     raise ValueError('The threshold for the method {} must ' +
                                      'be a float'.format(method))
-            elif method == 'linear_tr':
+            elif (method == 'linear_tr' or method == 'dual_ta'
+                  or method == 'dual_tw'):
                 if (not (type(threshold) == list or type(threshold) == tuple)
                    or len(threshold) != 2):
                     raise ValueError('The thresholds for the method {} must ' +
@@ -85,7 +90,7 @@ class PyPros:
                 None
             else:
                 raise ValueError('Non valid method. Valid values are ks and ' +
-                                 'static_tw, static_ta and linear_tr')
+                                 'single_tw, single_ta and linear_tr')
 
             self.threshold = threshold
 
@@ -97,7 +102,7 @@ class PyPros:
 
         if method == 'ks':
             self.result = calculate_koistinen_saltikoff(tair, tdew)
-        elif method == 'static_tw':
+        elif method == 'single_tw' or method == 'dual_tw':
             try:
                 dem = self.variables[
                       self.data_format['vars_files'].index('dem')]
@@ -108,12 +113,19 @@ class PyPros:
                 twet = ttd2tw(tair, tdew)
             else:
                 twet = get_tw_sadeghi(tair, tdew, dem)
-            self.result = calculate_single_threshold(twet, self.threshold)
-        elif method == 'static_ta':
+            if method == 'single_tw':
+                self.result = calculate_single_threshold(twet, self.threshold)
+            elif method == 'dual_tw':
+                self.result = calculate_dual_threshold(twet, self.threshold[0],
+                                                       self.threshold[1])
+        elif method == 'single_ta':
             self.result = calculate_single_threshold(tair, self.threshold)
         elif method == 'linear_tr':
             self.result = calculate_linear_transition(tair, self.threshold[0],
                                                       self.threshold[1])
+        elif method == 'dual_ta':
+            self.result = calculate_dual_threshold(tair, self.threshold[0],
+                                                   self.threshold[1])
 
     def __read_variables_files__(self, variables_file):
         if isinstance(variables_file, (list,)):
@@ -193,7 +205,7 @@ class PyPros:
             refl (numpy.array): Array with reflectivity values
 
         Raises:
-            IndexError: Raised if the types don't match in size ot type
+            IndexError: Raised if the types don't match in size or type
 
         Returns:
             float, numpy array: The precipitation type classification value
@@ -210,8 +222,13 @@ class PyPros:
             ks_class = np.digitize(self.result, prob_bins) - 1
             pros = (refl_class + ks_class * 5) * (refl >= 1)
 
-        elif self.method == 'static_tw' or self.method == 'static_ta':
+        elif self.method == 'single_tw' or self.method == 'single_ta':
             rain = np.digitize(self.result, np.array([1]))
             pros = (refl_class + rain * 10) * (refl >= 1)
+
+        elif self.method == 'dual_tw' or self.method == 'dual_ta':
+            prob_bins = np.array([0.0, 0.5, 1])
+            dual_class = np.digitize(self.result, prob_bins) - 1
+            pros = (refl_class + dual_class * 5) * (refl >= 1)
 
         return pros

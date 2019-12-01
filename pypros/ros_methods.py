@@ -89,9 +89,9 @@ def calculate_dual_threshold(field, th_s, th_r):
 
 
 def calculate_linear_transition(field, th_s, th_r):
-    """Calculates the precipitation type based on two threshold
-    values, one for rain and one for snow. Assumes a linear
-    transition between them.
+    """Calculates the probability of precipitation type based on
+    two threshold values, one for rain and one for snow. Assumes
+    a linear transition between them.
     If value >= th_r --> rain --> 0
     If value <= th_s --> snow --> 1
     If th_s < value < th_r --> mixed --> (0, 1)

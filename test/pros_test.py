@@ -90,11 +90,11 @@ class TestCalculateRos(unittest.TestCase):
                       self.data_format)
         self.assertEqual(inst.result.shape, (3, 3))
 
-        inst = PyPros(self.variables_file, 'static_tw', 1.5,
+        inst = PyPros(self.variables_file, 'single_tw', 1.5,
                       self.data_format)
         self.assertEqual(inst.result.shape, (3, 3))
 
-        inst = PyPros(self.variables_file, 'static_ta', 1.0,
+        inst = PyPros(self.variables_file, 'single_ta', 1.0,
                       self.data_format)
         self.assertEqual(inst.result.shape, (3, 3))
 
@@ -102,11 +102,19 @@ class TestCalculateRos(unittest.TestCase):
                       self.data_format)
         self.assertEqual(inst.result.shape, (3, 3))
 
+        inst = PyPros(self.variables_file, 'dual_ta', [0, 3],
+                      self.data_format)
+        self.assertEqual(inst.result.shape, (3, 3))
+
+        inst = PyPros(self.variables_file, 'dual_tw', [0, 3],
+                      self.data_format)
+        self.assertEqual(inst.result.shape, (3, 3))
+
     def test_init_twet_without_dem(self):
         variables_file = ['/tmp/tair.tif', '/tmp/tdew.tif']
         data_format = {'vars_files': ['tair', 'tdew']}
         try:
-            PyPros(variables_file, 'static_tw', 1.5,
+            PyPros(variables_file, 'single_tw', 1.5,
                    data_format)
         except Exception as cm:
             self.assertEqual('Since no DEM is supplied, wet bulb ' +
@@ -117,14 +125,14 @@ class TestCalculateRos(unittest.TestCase):
     def test_init_different_methods_wrong(self):
 
         with self.assertRaises(ValueError) as cm:
-            PyPros(self.variables_file, 'static_tw', '1',
+            PyPros(self.variables_file, 'single_tw', '1',
                    self.data_format)
         self.assertEqual(
             'The threshold for the method {} must be a float',
             str(cm.exception))
 
         with self.assertRaises(ValueError) as cm:
-            PyPros(self.variables_file, 'static_ta', '1.5',
+            PyPros(self.variables_file, 'single_ta', '1.5',
                    self.data_format)
         self.assertEqual(
             'The threshold for the method {} must be a float',
@@ -132,6 +140,20 @@ class TestCalculateRos(unittest.TestCase):
 
         with self.assertRaises(ValueError) as cm:
             PyPros(self.variables_file, 'linear_tr', [3],
+                   self.data_format)
+        self.assertEqual(
+            'The thresholds for the method {} must be a list/tuple' +
+            ' of length two', str(cm.exception))
+
+        with self.assertRaises(ValueError) as cm:
+            PyPros(self.variables_file, 'dual_tw', [3],
+                   self.data_format)
+        self.assertEqual(
+            'The thresholds for the method {} must be a list/tuple' +
+            ' of length two', str(cm.exception))
+
+        with self.assertRaises(ValueError) as cm:
+            PyPros(self.variables_file, 'dual_ta', [3],
                    self.data_format)
         self.assertEqual(
             'The thresholds for the method {} must be a list/tuple' +
@@ -162,7 +184,7 @@ class TestCalculateRos(unittest.TestCase):
         for i in range(1, 3):
             self.assertEqual(pros_masked[2][i], 10 + i)
 
-        inst = PyPros(self.variables_file, 'static_tw', 1.5,
+        inst = PyPros(self.variables_file, 'single_tw', 1.5,
                       self.data_format)
         pros_masked = inst.refl_mask(refl)
 
@@ -173,7 +195,7 @@ class TestCalculateRos(unittest.TestCase):
         for i in range(1, 3):
             self.assertEqual(pros_masked[2][i], 10 + i)
 
-        inst = PyPros(self.variables_file, 'static_ta', 1.0,
+        inst = PyPros(self.variables_file, 'single_ta', 1.0,
                       self.data_format)
         pros_masked = inst.refl_mask(refl)
 
@@ -198,6 +220,34 @@ class TestCalculateRos(unittest.TestCase):
         for i in range(1, 3):
             self.assertEqual(pros_masked[2][i], 10 + i)
 
+        inst = PyPros(self.variables_file, 'dual_ta', [0, 3],
+                      self.data_format)
+        pros_masked = inst.refl_mask(refl)
+
+        # rain
+        for i in range(1, 3):
+            self.assertEqual(pros_masked[0][i], i)
+        # sleet
+        for i in range(1, 3):
+            self.assertEqual(pros_masked[1][i], 5 + i)
+        # snow
+        for i in range(1, 3):
+            self.assertEqual(pros_masked[2][i], 10 + i)
+
+        inst = PyPros(self.variables_file, 'dual_tw', [0, 3],
+                      self.data_format)
+        pros_masked = inst.refl_mask(refl)
+
+        # rain
+        for i in range(1, 3):
+            self.assertEqual(pros_masked[0][i], i)
+        # sleet
+        for i in range(1, 3):
+            self.assertEqual(pros_masked[1][i], 5 + i)
+        # snow
+        for i in range(1, 3):
+            self.assertEqual(pros_masked[2][i], 10 + i)
+
     def test_refl_mask_wrong(self):
         variables_file = ['/tmp/tair.tif', '/tmp/tdew.tif']
         data_format = {'vars_files': ['tair', 'tdew']}
@@ -205,7 +255,7 @@ class TestCalculateRos(unittest.TestCase):
         refl = numpy.ones((1, 1))
 
         with self.assertRaises(IndexError) as cm:
-            inst = PyPros(variables_file, 'static_ta', 1.5,
+            inst = PyPros(variables_file, 'single_ta', 1.5,
                           data_format)
             inst.refl_mask(refl)
         self.assertEqual('Variables fields must have the same shape.',
