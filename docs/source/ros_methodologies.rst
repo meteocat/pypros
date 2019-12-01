@@ -12,6 +12,7 @@ There are different approaches to address this issue:
    - Single threshold
    - Linear transition
    - Koistinen and Saltikoff
+   - Dual threshold
 
 Single threshold
 ----------------
@@ -61,11 +62,12 @@ Two threshold values are set to discriminate precipitation type between rain
 (th_r) and snow (th_r). It can be either used with any meteorological field,
 but with thresholds properly defined. If a value of the meteorological field
 is above th_r, precipitation is classified as rain. On the other hand, if
-the values is below th_s, precipitation is classified as snow. A linear
+the value is below th_s, precipitation is classified as snow. A linear
 transition is assumed for values between th_s and th_r, then precipitation
 is classified as a mixed type.
 
-If the meteorological field chosen to discriminate air  is air temperature:
+If the meteorological field chosen to discriminate precipitation is air
+temperature:
 
 .. math::
    T_{a} <= T_{snow} \longrightarrow Snow
@@ -92,3 +94,24 @@ where T corresponds to temperature in Celsius and RH to relative humidity in %.
 If p(snow) obtained values are below 0.33 precipitation is in form of rain,
 if they are between 0.33 and 0.66 in form of sleet and classified as snow
 if they are above 0.66.
+
+
+Dual thresholds
+---------------
+Two threshold values are set to discriminate precipitation type between rain
+(th_r) and snow (th_r). It can be either used with any meteorological field,
+but with thresholds properly defined. If a value of the meteorological field
+is above th_r, precipitation is classified as rain. On the other hand, if
+the value is below th_s, precipitation is classified as snow. Finally, if the
+values are between th_s and th_r, then precipitation is classified as a mixed
+type.
+
+If the meteorological field chosen to discriminate precipitation is wet
+bulb temperature:
+
+.. math::
+   T_{w} <= T_{snow} \longrightarrow Snow
+
+   T_{snow} < T_{w} < T_{rain} \longrightarrow Mixed
+
+   T_{w} >= T_{rain} \longrightarrow Rain
