@@ -10,7 +10,7 @@ format depending on the rain or snow methodology.
 
 First of all, we’ll import PyPros class.
 
-.. code:: ipython3
+.. code:: python
 
     from pypros.pros import PyPros
 
@@ -39,12 +39,12 @@ derived from air and dew point temperature fields only.
 First, we’ll define the paths to each field and we’ll set
 ``variables_file`` with all of them.
 
-.. code:: ipython3
+.. code:: python
 
     tair_file = '../sample-data/INT_TAIR_20170325_0030.tif'
     tdew_file = '../sample-data/INT_TDEW_20170325_0030.tif'
     dem_file = '../sample-data/DEM_CAT.tif'
-    
+
     variables_files = [tair_file, tdew_file, dem_file]
 
 Method and threshold
@@ -79,7 +79,7 @@ set, it assumes the default one.
 Now, as an example, we’ll define wet bulb temperature static threshold
 as the method to use and set threshold to 1.3\ :math:`^{\circ}`\ C.
 
-.. code:: ipython3
+.. code:: python
 
     method = 'static_tw'
     threshold = 1.3
@@ -104,14 +104,14 @@ the variables are the following ones:
 Then, we’ll set ``data_format`` parameter following the
 ``variables_files`` order:
 
-.. code:: ipython3
+.. code:: python
 
     data_format = {'vars_files': ['tair', 'tdew', 'dem']}
 
-Now we’re ready to call PyPros class and obtain a surface precipitation type field.
-                                                                                   
+Now we’re ready to call PyPros class and obtain a surface
+precipitation type field.
 
-.. code:: ipython3
+.. code:: python
 
     static_tw = PyPros(variables_files, method, threshold, data_format)
 
@@ -121,7 +121,7 @@ raster file.
 
 To obtain the result, we must get the ``result`` attribute of the class.
 
-.. code:: ipython3
+.. code:: python
 
     static_tw_field = static_tw.result
 
@@ -132,7 +132,7 @@ have to prepare the reflectivity field.
 
 First of all, as it’s a .tif file, we’ll import ``gdal`` library.
 
-.. code:: ipython3
+.. code:: python
 
     from osgeo import gdal
     refl_file = '../sample-data/CAPPI_XRAD_20170325_0030.tif'
@@ -142,7 +142,7 @@ In this case we used gdal because we have the reflectivity field stored
 in a .tif file, but for the ``refl_mask`` only an array is needed. So
 any format can be used, as long as it is transformed into a numpy array.
 
-.. code:: ipython3
+.. code:: python
 
     static_tw_masked = static_tw.refl_mask(refl_array)
 
@@ -151,20 +151,22 @@ Now, we’ve obtained two fields that we can save in raster files using
 parameters: the field matrix we want to save and the file path
 destination.
 
-.. code:: ipython3
+.. code:: python
 
     static_tw.save_file(static_tw_field, '../sample-data/output/static_tw.tif')
     static_tw.save_file(static_tw_masked, '../sample-data/output/static_tw_masked.tif')
 
 We can have a look at ``static_tw`` result by plotting it with imshow:
 
-.. code:: ipython3
+.. code:: python
 
     import matplotlib.pyplot as plt
-    
+
     plt.imshow(static_tw.result)
     plt.colorbar()
     plt.show()
 
-We have finished the introduction to PyPros class! Change the threshold values and methods and see how the snow level varies!
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+We have finished the introduction to PyPros class! Change the threshold values
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+and methods and see how the snow level varies!
+''''''''''''''''''''''''''''''''''''''''''''''

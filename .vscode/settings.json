@@ -1,11 +1,13 @@
 {
     "autoDocstring.docstringFormat": "google",
     "cSpell.words": [
+        "automodule",
         "cappi",
         "catalunya",
         "chdir",
         "codemirror",
         "colorbar",
+        "conda",
         "epub",
         "errno",
         "exporter",
@@ -36,6 +38,7 @@
         "pro",
         "pros",
         "pros's",
+        "psychrometric",
         "psychrometrics",
         "py",
         "pygments",
