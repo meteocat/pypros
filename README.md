@@ -9,7 +9,7 @@
 
 
 PyPROS, precipitation type calculation: rain or snow
-===================================
+====================================================
 
 The PyPROS package applies several algorithms to estimate the precipitation type and discriminate it among rain, sleet and snow. 
 
@@ -22,7 +22,7 @@ To install pyPROS you can have a look at [pyPROS installation](https://pypros.re
 
 Use
 ===
-Different precipitation type discrimination strategies are implemented in this package. More information in [pyPROS documentation](https://pypros.readthedocs.io/en/latest/index.html)
+Different precipitation type discrimination schemes are implemented in this package. More information in [pyPROS documentation](https://pypros.readthedocs.io/en/latest/index.html)
 
 A set of examples were designed to explore the different possibilities of PROS.
 
