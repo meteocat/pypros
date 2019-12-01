@@ -10,6 +10,6 @@ class applications.
 
    pypros_class
    pypros_run
-   static-threshold
+   single-threshold
    linear-transition
    koistinen-saltikoff

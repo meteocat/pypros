@@ -27,7 +27,7 @@ The configuration file is a .json including the following parameters:
 .. code:: json
 
        {
-        "method": "static_tw",
+        "method": "single_tw",
         "threshold": 1.0,
         "data_format": {"vars_files": ["tair", "tdew", "dem"]},
         "refl_masked": "True"
@@ -44,7 +44,7 @@ temperature, digital elevation model and radar reflectivity are
 available in ``../sample-data/`` directory. We’ll introduce two examples
 of how ``pypros_run`` script is run.
 
-Air temperature static threshold
+Air temperature single threshold
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The configuration file must look like the following one. We’ll set the
@@ -53,7 +53,7 @@ threshold to 1.0\ :math:`^{\circ}`\ C.
 .. code:: json
 
        {
-        "method": "static_ta",
+        "method": "single_ta",
         "threshold": 1.0,
         "data_format": {"vars_files": ["tair", "tdew"]},
         "refl_masked": "False"
@@ -75,7 +75,7 @@ set the threshold to 1.5\ :math:`^{\circ}`\ C.
 .. code:: json
 
        {
-        "method": "static_tw",
+        "method": "single_tw",
         "threshold": 1.5,
         "data_format": {"vars_files": ["tair", "tdew", "dem"]},
         "refl_masked": "True"

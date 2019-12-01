@@ -62,13 +62,13 @@ set, it assumes the default one.
 | Koistinen and   | ``'ks'``        | ``None``         | ``None``        |
 | Saltikoff       |                 |                  |                 |
 +-----------------+-----------------+------------------+-----------------+
-| Air temperature | ``'static_ta'`` | ``float``        | ``0.0``         |
-| static          |                 |                  |                 |
+| Air temperature | ``'single_ta'`` | ``float``        | ``0.0``         |
+| single          |                 |                  |                 |
 | threshold       |                 |                  |                 |
 +-----------------+-----------------+------------------+-----------------+
-| Wet bulb        | ``'static_tw'`` | ``float``        | ``1.5``         |
+| Wet bulb        | ``'single_tw'`` | ``float``        | ``1.5``         |
 | temperature     |                 |                  |                 |
-| static          |                 |                  |                 |
+| single          |                 |                  |                 |
 | threshold       |                 |                  |                 |
 +-----------------+-----------------+------------------+-----------------+
 | Air temperature | ``'linear_tr'`` | ``[th_l, th_u]`` | ``[0, 3]``      |
@@ -76,12 +76,12 @@ set, it assumes the default one.
 | transition      |                 |                  |                 |
 +-----------------+-----------------+------------------+-----------------+
 
-Now, as an example, we’ll define wet bulb temperature static threshold
+Now, as an example, we’ll define wet bulb temperature single threshold
 as the method to use and set threshold to 1.3\ :math:`^{\circ}`\ C.
 
 .. code:: python
 
-    method = 'static_tw'
+    method = 'single_tw'
     threshold = 1.3
 
 Data format
@@ -113,7 +113,7 @@ precipitation type field.
 
 .. code:: python
 
-    static_tw = PyPros(variables_files, method, threshold, data_format)
+    single_tw = PyPros(variables_files, method, threshold, data_format)
 
 Once we’ve called the class, now we can obtain the surface precipitation
 type field, apply the reflectivity mask available and save both in a
@@ -123,7 +123,7 @@ To obtain the result, we must get the ``result`` attribute of the class.
 
 .. code:: python
 
-    static_tw_field = static_tw.result
+    single_tw_field = single_tw.result
 
 And if we want to apply the reflectivity mask, we have to call
 ``refl_mask`` function from the PyPros class, which requires the
@@ -144,7 +144,7 @@ any format can be used, as long as it is transformed into a numpy array.
 
 .. code:: python
 
-    static_tw_masked = static_tw.refl_mask(refl_array)
+    single_tw_masked = single_tw.refl_mask(refl_array)
 
 Now, we’ve obtained two fields that we can save in raster files using
 ``save_result`` function from PyPros class. This function receives two
@@ -153,16 +153,16 @@ destination.
 
 .. code:: python
 
-    static_tw.save_file(static_tw_field, '../sample-data/output/static_tw.tif')
-    static_tw.save_file(static_tw_masked, '../sample-data/output/static_tw_masked.tif')
+    single_tw.save_file(single_tw_field, '../sample-data/output/single_tw.tif')
+    single_tw.save_file(single_tw_masked, '../sample-data/output/single_tw_masked.tif')
 
-We can have a look at ``static_tw`` result by plotting it with imshow:
+We can have a look at ``single_tw`` result by plotting it with imshow:
 
 .. code:: python
 
     import matplotlib.pyplot as plt
 
-    plt.imshow(static_tw.result)
+    plt.imshow(single_tw.result)
     plt.colorbar()
     plt.show()
 
