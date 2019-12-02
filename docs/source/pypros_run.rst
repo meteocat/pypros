@@ -66,8 +66,8 @@ radar reflectivity field. We would execute the script this way:
 
    > pypros_run [path to air temperature field] [path to dew point temperature field] [path to configuration file] [output path]
 
-Wet bulb temperature threshold
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Wet bulb temperature single threshold
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The configuration file should include the following parameters. We’ll
 set the threshold to 1.5\ :math:`^{\circ}`\ C.

@@ -67,8 +67,10 @@ class PyPros:
                 self.threshold = 0
             elif method == 'static_tw':
                 self.threshold = 1.5
-            elif method == 'linear_tr':
+            elif method == 'linear_tr' or method == 'dual_ta':
                 self.threshold = [0, 3]
+            elif method == 'dual_tw':
+                self.threshold = [0.7, 1.0]
             elif method == 'ks':
                 None
             else:

@@ -75,6 +75,16 @@ set, it assumes the default one.
 | linear          |                 |                  |                 |
 | transition      |                 |                  |                 |
 +-----------------+-----------------+------------------+-----------------+
+| Air temperature | ``'dual_ta'``   | ``[th_s, th_r]`` | ``[0, 3]``      |
+| dual            |                 |                  |                 |
+| threshold       |                 |                  |                 |
++-----------------+-----------------+------------------+-----------------+
+| Wet bulb        | ``'dual_tw'``   | ``[th_s, th_r]`` | ``[0.7, 1]``    |
+| temperature     |                 |                  |                 |
+| dual            |                 |                  |                 |
+| threshold       |                 |                  |                 |
++-----------------+-----------------+------------------+-----------------+
+
 
 Now, as an example, we’ll define wet bulb temperature single threshold
 as the method to use and set threshold to 1.3\ :math:`^{\circ}`\ C.

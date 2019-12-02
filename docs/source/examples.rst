@@ -13,3 +13,4 @@ class applications.
    single-threshold
    linear-transition
    koistinen-saltikoff
+   dual-threshold
