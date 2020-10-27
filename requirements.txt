@@ -10,7 +10,7 @@ chardet==3.0.4
 clyent==1.2.2
 conda==4.6.14
 conda-build==3.17.8
-cryptography==2.7
+cryptography==3.2
 decorator==4.4.0
 docutils==0.14
 entrypoints==0.3
