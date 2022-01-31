@@ -102,7 +102,6 @@ class TestDewpoint(unittest.TestCase):
         Values checked at https://www.weather.gov/epz/wxcalc_rh
         For an independent result
         '''
-
         temp = numpy.ones((4, 1))
         r_h = numpy.ones((4, 1))
         z = numpy.ones((4, 1))
@@ -138,7 +137,6 @@ class TestDewpoint(unittest.TestCase):
         Values checked at https://www.weather.gov/epz/wxcalc_rh
         For an independent result
         '''
-
         temp = numpy.ones((4, 1))
         tdew = numpy.ones((4, 1))
         z = numpy.ones((4, 1))
@@ -160,7 +158,7 @@ class TestDewpoint(unittest.TestCase):
         z[3][0] = 3000
 
         result = get_tw_sadeghi(temp, tdew, z)
-        print(result)
+
         self.assertEqual(result.shape[0], temp.shape[0])
         self.assertEqual(result.shape[1], temp.shape[1])
 
