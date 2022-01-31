@@ -1,6 +1,6 @@
 language: python
 python:
-- '3.6'
+- '3.9'
 before_install:
 - sudo apt-get update
 - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
@@ -13,9 +13,8 @@ before_install:
 env:
 - GDAL_DATA=$HOME/miniconda/envs/test-environment/share/gdal
 install:
-- conda create -n test-environment -c conda-forge python=$TRAVIS_PYTHON_VERSION numpy
+- conda create -n test-environment -c conda-forge python=$TRAVIS_PYTHON_VERSION numpy gdal
 - source activate test-environment
-- conda install -y gdal
 - conda list
 script:
 - python setup.py build
