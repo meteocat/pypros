@@ -2,8 +2,7 @@ import unittest
 
 import numpy
 
-import gdal
-import osr
+from osgeo import gdal, osr
 from pypros.pros import PyPros
 
 
