@@ -13,8 +13,9 @@ before_install:
 env:
 - GDAL_DATA=$HOME/miniconda/envs/test-environment/share/gdal
 install:
-- conda create -n test-environment -c conda-forge python=$TRAVIS_PYTHON_VERSION numpy gdal
+- conda create -n test-environment -c conda-forge python=$TRAVIS_PYTHON_VERSION numpy
 - source activate test-environment
+- conda install -y gdal
 - conda list
 script:
 - python setup.py build
