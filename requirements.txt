@@ -22,7 +22,7 @@ idna==2.8
 imagesize==1.1.0
 ipython-genutils==0.2.0
 isort==4.3.17
-Jinja2==2.10.1
+Jinja2==2.11.3
 jsonschema==3.0.1
 jupyter-core==4.4.0
 lazy-object-proxy==1.3.1
