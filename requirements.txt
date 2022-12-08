@@ -4,7 +4,7 @@ astroid==2.0.4
 attrs==19.1.0
 Babel==2.7.0
 beautifulsoup4==4.7.1
-certifi==2019.3.9
+certifi==2022.12.7
 cffi==1.12.3
 chardet==3.0.4
 clyent==1.2.2
